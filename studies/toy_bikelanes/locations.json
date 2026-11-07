@@ -1,0 +1,36 @@
+{
+  "gazetteer": [
+    {
+      "name": "Old Town",
+      "level": "locality",
+      "aliases": ["Altstadt"],
+      "in_study_area": true
+    },
+    {
+      "name": "Riverside",
+      "level": "locality",
+      "in_study_area": true
+    },
+    {
+      "name": "Springfield",
+      "level": "municipality",
+      "in_study_area": true
+    }
+  ],
+  "coverage_audit": {
+    "level": "municipality"
+  },
+  "community_relevance": {
+    "data_gaps_note": "toy",
+    "indicators": [
+      {
+        "id": "safety_concern",
+        "label": "Safety concern",
+        "weight": 2,
+        "thread_ids": ["A_1"],
+        "frame_ids": [],
+        "actor_categories": ["daily_cyclist"]
+      }
+    ]
+  }
+}

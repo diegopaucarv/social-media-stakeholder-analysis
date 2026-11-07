@@ -1,0 +1,85 @@
+{
+  "id": "toy_bikelanes",
+  "title": "Bike lanes in a mid-sized city (toy study for tests)",
+  "objective": "Show that the pipeline is topic-agnostic: extract the arguments for and against new bike lanes.",
+  "context": "Synthetic corpus about a municipal plan to build protected bike lanes. Commenters are residents, cyclists and shop owners.",
+  "corpus_language": "en",
+  "analysis_language": "en",
+  "input_schema": {
+    "comments": {
+      "comment_id": "cid",
+      "post_url": "post",
+      "post_numeric_id": "post_num",
+      "post_title": "post_title",
+      "timestamp": "ts",
+      "thread_depth": "depth",
+      "likes": "likes",
+      "reply_count": "replies",
+      "reply_to_id": "parent",
+      "user_id": "uid",
+      "user_name": "uname",
+      "text": "body"
+    },
+    "posts": {
+      "post_id": "pid",
+      "url": "link",
+      "text": "body",
+      "timestamp": "ts",
+      "author": "by",
+      "page_name": "page"
+    }
+  },
+  "relevance": {
+    "likes_weight": 1,
+    "reply_weight": 2,
+    "high_threshold": 4,
+    "medium_threshold": 2
+  },
+  "period": {
+    "cutoff_date": "2025-01-01",
+    "before_label": "early",
+    "after_label": "late"
+  },
+  "classification": {
+    "batch_size": 5,
+    "post_batch_size": 2,
+    "min_confidence": 1,
+    "parent_text_max_chars": 100
+  },
+  "contacts": {
+    "min_comments_for_activity_candidate": 3
+  },
+  "stats": {
+    "focus_source_group": "official",
+    "min_expected_warning": 5,
+    "bootstrap_iterations": 50,
+    "seed": 3,
+    "gender_values": [
+      "M",
+      "F"
+    ]
+  },
+  "gap_checks": {
+    "min_frame_comments": 5,
+    "min_thread_comments": 2,
+    "min_posts_for_pooled_tests": 10,
+    "min_comments_per_year": 3,
+    "expected_terms": [
+      {
+        "label": "accidents",
+        "pattern": "accident|crash"
+      }
+    ]
+  },
+  "deliverables": [
+    {
+      "id": "D1",
+      "task": "Task A",
+      "description": "Selected comments",
+      "artifacts": [
+        "01_selected_comments.csv"
+      ],
+      "manual_followup": ""
+    }
+  ]
+}

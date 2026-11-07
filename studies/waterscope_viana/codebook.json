@@ -1,0 +1,485 @@
+{
+  "no_frame": {
+    "id": "SIN",
+    "label": "No frame",
+    "description": "Comments that sustain none of the frames: greetings, praise or support without argument, generic insults without a reason, unrelated topics, tags, stickers or missing text."
+  },
+  "frames": [
+    {
+      "id": "F1",
+      "label": "Quality beliefs and false sense of safety",
+      "argument": "Water from the family mine or well does not need testing because it looks clear, flows continuously and has been consumed for generations without perceived illness.",
+      "threads": [
+        {
+          "id": "F1_H1",
+          "label": "Tradition and experience as guarantee",
+          "description": "We always drank it and never got ill; spring water that has sustained life for centuries."
+        },
+        {
+          "id": "F1_H2",
+          "label": "Bounded autonomous use",
+          "description": "Own water is used for irrigation, garden, vegetable plot, washing or other non-potable uses, assuming it needs no control."
+        },
+        {
+          "id": "F1_H3",
+          "label": "Testing as a condition / right to use",
+          "description": "Own water is safe (sometimes 'if it is tested periodically') and the right to use or test it without obligation is defended."
+        },
+        {
+          "id": "F1_H4",
+          "label": "Ambivalence: risk depends on place",
+          "description": "Wells may be contaminated and the network is sometimes unfit too; safety depends on the location."
+        }
+      ]
+    },
+    {
+      "id": "F2",
+      "label": "Tariff resistance and rejection of centralised management",
+      "argument": "AdAM bills and charges are seen as disproportionate compared with historical local costs, leading residents to keep or reactivate their own wells to avoid mandatory charges.",
+      "threads": [
+        {
+          "id": "F2_H1",
+          "label": "Fixed charges and zero consumption",
+          "description": "Paying without consuming, or paying sanitation/waste charges where no service exists."
+        },
+        {
+          "id": "F2_H2",
+          "label": "Previous municipal management and non-member municipalities",
+          "description": "Comparison with municipal management before AdAM or with municipalities that did not join; criticism of handing over the water."
+        },
+        {
+          "id": "F2_H3",
+          "label": "Individual exit: own well, mine, spring or disconnection",
+          "description": "Keeping a private source, trying to disconnect, or rejecting the mandatory connection."
+        },
+        {
+          "id": "F2_H4",
+          "label": "Mobilisation and reversal",
+          "description": "Political mobilisation, demonstrations and demands to reverse the multimunicipal system ('reversao')."
+        },
+        {
+          "id": "F2_H5",
+          "label": "Price versus service",
+          "description": "Meter reading left to the customer, estimated bills, customer service, digitalisation, 'water at the price of gold'."
+        }
+      ]
+    },
+    {
+      "id": "F3",
+      "label": "Institutional distrust and perceived environmental hypocrisy",
+      "argument": "Alerts and campaigns from public bodies (advice against drinking from public fountains, calls to save water) are met with scepticism; residents accuse the bodies of ignoring industrial, wastewater-plant or mining discharges into rivers.",
+      "threads": [
+        {
+          "id": "F3_H1",
+          "label": "Official denial versus neighbours' suspicion",
+          "description": "Foam, sewage or pollution in rivers and beaches: official explanation (natural phenomenon) against local suspicion."
+        },
+        {
+          "id": "F3_H2",
+          "label": "AdAM alert read as marketing or monopoly",
+          "description": "A warning about private water sources is read as a sales pitch, a business or a monopoly move."
+        },
+        {
+          "id": "F3_H3",
+          "label": "Closure or neglect of public fountains",
+          "description": "Fountains were closed or abandoned and are no longer tested or signposted as they used to be."
+        },
+        {
+          "id": "F3_H4",
+          "label": "Industrial or extractive contamination and complicity",
+          "description": "Mining, lithium, kaolin or wastewater-plant pollution and the inaction or complicity of authorities."
+        },
+        {
+          "id": "F3_H5",
+          "label": "Hypocrisy of water-saving campaigns",
+          "description": "Citizens are asked to save while leaks run for days or public lawns are watered."
+        }
+      ]
+    },
+    {
+      "id": "F4",
+      "label": "Invisible risks and public-network supply failures",
+      "argument": "The public supply is not seen as an absolute guarantee of safety, which motivates the search for underground alternatives even without control of nitrates or bacteria.",
+      "threads": [
+        {
+          "id": "F4_H1",
+          "label": "Organoleptic quality of the network",
+          "description": "Chlorine or bleach smell, turbid, muddy or discoloured water, taste of earth."
+        },
+        {
+          "id": "F4_H2",
+          "label": "Pressure, continuity, cuts and pipe breaks",
+          "description": "Loss of pressure, daily cuts, long outages and unrepaired breaks."
+        },
+        {
+          "id": "F4_H3",
+          "label": "Network intake from a polluted river",
+          "description": "The network water is abstracted from a river with pollution or quality problems."
+        }
+      ]
+    }
+  ],
+  "stance_definitions": {
+    "supports": "The comment sustains or reproduces the argument of the frame/thread.",
+    "opposes": "The comment contradicts or rebuts the argument of the thread (e.g. gives a natural explanation for foam, or defends paying waste charges even without consumption).",
+    "qualifies": "The comment accepts the argument only partly, adds conditions or doubts."
+  },
+  "evidence_definitions": {
+    "core": "The comment reproduces almost literally the target argument of the frame.",
+    "adjacent": "The comment gives evidence for the same frame without stating the whole argument."
+  },
+  "decision_rules": [
+    "F1 requires a reference to the author's own or a private water source (well, mine, spring, borehole, fountain) and to its quality, safety, testing, tradition or use. Rejecting a mandatory connection because of price is F2, not F1.",
+    "Attacking the issuer of an alert about private water sources (the concessionaire or the municipality) is F3 (secondary frame F1 if the author also defends their own water).",
+    "Tie-break when two frames weigh the same: choose as primary the frame that matches the target of the criticism: price or charges -> F2; the issuing institution or its campaigns -> F3; quality or continuity of the public network -> F4; the author's own water source -> F1.",
+    "Leaks, water running in the street or public lawns being watered, mentioned under a water-saving campaign, are F3_H5. The same complaint on a post unrelated to saving campaigns is F4_H2.",
+    "Charges for services the author says they do not use, or that do not exist at their address (sanitation, waste), are F2_H1 even when the author also keeps a private source (then secondary frame F1).",
+    "Pure agreement, praise or encouragement ('Parabéns', 'Força Sr. Presidente', 'Exatamente', 'Apoiado', emojis) is no-frame. Exception: an endorsement counts as adjacent evidence only if the text itself names the subject, e.g. 'Reversão!!', 'Reversão em todos os municípios', 'espero que a Câmara de Viana tome a mesma atitude' (F2_H4), or a concrete figure or item of the bill (F2_H1).",
+    "Generic insults to the concessionaire or to politicians ('ladrões', 'roubo') without a stated reason are no-frame; with a stated reason (a number, a charge, a comparison) they are adjacent evidence for F2.",
+    "Customer-service complaints (phone not answered, app not working) are no-frame unless tied to billing, meter reading or price (F2_H5).",
+    "Explanations that foam, discolouration or turbidity are natural phenomena (algae, organic matter, wind-blown dust, natural surfactants) are F3_H1 with stance 'opposes'; asking for laboratory samples to document the case is F3_H1 with stance 'qualifies'.",
+    "Comparisons with municipalities that did not join the multimunicipal system (e.g. Monção, Melgaço, Ponte da Barca) are F2_H2.",
+    "Actor signals: tag micro-level categories when the author says they own or use a well, mine, spring, borehole or public fountain; tag meso or exo categories only when the text states a role (e.g. 'sou presidente da junta'). Post authors are not tagged automatically."
+  ],
+  "examples": [
+    {
+      "input": {
+        "comment_id": "ex01",
+        "thread_depth": 0,
+        "text": "Bebi sempre da água do poço e das fontes e nunca adoeci. A da rede cheira a cloro."
+      },
+      "output": {
+        "comment_id": "ex01",
+        "is_institutional": false,
+        "frame_id": "F1",
+        "secondary_frame_id": "F4",
+        "thread_id": "F1_H1",
+        "emergent_thread_proposal": "",
+        "stance": "supports",
+        "evidence_level": "core",
+        "literal_excerpt": "Bebi sempre da água do poço e das fontes e nunca adoeci",
+        "rationale": "Years of drinking well and fountain water without illness as a guarantee; contrasts it with the chlorine smell of the network.",
+        "confidence": 3,
+        "needs_human_review": false,
+        "review_reason": "",
+        "actor_category": "private_source_user",
+        "actor_self_declared": true,
+        "actor_evidence": "Bebi sempre da água do poço"
+      },
+      "note": "Core F1 evidence plus a self-declared private-source user."
+    },
+    {
+      "input": {
+        "comment_id": "ex02",
+        "thread_depth": 0,
+        "text": "Casa fechada em Neiva, consumo zero e pago mais de 20 euros todos os meses. Isto é roubo."
+      },
+      "output": {
+        "comment_id": "ex02",
+        "is_institutional": false,
+        "frame_id": "F2",
+        "secondary_frame_id": "",
+        "thread_id": "F2_H1",
+        "emergent_thread_proposal": "",
+        "stance": "supports",
+        "evidence_level": "adjacent",
+        "literal_excerpt": "consumo zero e pago mais de 20 euros todos os meses",
+        "rationale": "Fixed charge without consumption seen as disproportionate.",
+        "confidence": 3,
+        "needs_human_review": false,
+        "review_reason": "",
+        "actor_category": "",
+        "actor_self_declared": false,
+        "actor_evidence": ""
+      },
+      "note": "Firm adjacent evidence: explicit reason and figures."
+    },
+    {
+      "input": {
+        "comment_id": "ex03",
+        "thread_depth": 1,
+        "text": "Pois, a água vem da ETAR e vai para a ETA... bom proveito."
+      },
+      "output": {
+        "comment_id": "ex03",
+        "is_institutional": false,
+        "frame_id": "F3",
+        "secondary_frame_id": "F4",
+        "thread_id": "F3_H4",
+        "emergent_thread_proposal": "",
+        "stance": "supports",
+        "evidence_level": "adjacent",
+        "literal_excerpt": "a água vem da ETAR e vai para a ETA",
+        "rationale": "Irony: suggests the network water is contaminated by wastewater-plant discharges.",
+        "confidence": 2,
+        "needs_human_review": true,
+        "review_reason": "irony",
+        "actor_category": "",
+        "actor_self_declared": false,
+        "actor_evidence": ""
+      },
+      "note": "Irony is coded by its pragmatic meaning and flagged for review."
+    },
+    {
+      "input": {
+        "comment_id": "ex04",
+        "thread_depth": 1,
+        "text": "O pó trazido pelo vento para a praia explica a espuma. Não é esgoto."
+      },
+      "output": {
+        "comment_id": "ex04",
+        "is_institutional": false,
+        "frame_id": "F3",
+        "secondary_frame_id": "",
+        "thread_id": "F3_H1",
+        "emergent_thread_proposal": "",
+        "stance": "opposes",
+        "evidence_level": "core",
+        "literal_excerpt": "O pó trazido pelo vento para a praia explica a espuma. Não é esgoto.",
+        "rationale": "Rebuts the sewage suspicion with a natural explanation.",
+        "confidence": 3,
+        "needs_human_review": false,
+        "review_reason": "",
+        "actor_category": "",
+        "actor_self_declared": false,
+        "actor_evidence": ""
+      },
+      "note": "A counter-argument inside a thread is coded with stance 'opposes'."
+    },
+    {
+      "input": {
+        "comment_id": "ex05",
+        "thread_depth": 0,
+        "text": "Este aviso sobre captações particulares é uma treta para vender o produto deles."
+      },
+      "output": {
+        "comment_id": "ex05",
+        "is_institutional": false,
+        "frame_id": "F3",
+        "secondary_frame_id": "F1",
+        "thread_id": "F3_H2",
+        "emergent_thread_proposal": "",
+        "stance": "supports",
+        "evidence_level": "core",
+        "literal_excerpt": "é uma treta para vender o produto deles",
+        "rationale": "Reads the alert about private sources as marketing; implicitly defends own water.",
+        "confidence": 3,
+        "needs_human_review": false,
+        "review_reason": "",
+        "actor_category": "",
+        "actor_self_declared": false,
+        "actor_evidence": ""
+      },
+      "note": "Attacking the issuer of the alert is F3 with F1 as secondary frame."
+    },
+    {
+      "input": {
+        "comment_id": "ex06",
+        "thread_depth": 0,
+        "text": "Parabéns a toda a equipa! 👏"
+      },
+      "output": {
+        "comment_id": "ex06",
+        "is_institutional": false,
+        "frame_id": "SIN",
+        "secondary_frame_id": "",
+        "thread_id": "",
+        "emergent_thread_proposal": "",
+        "stance": "",
+        "evidence_level": "",
+        "literal_excerpt": "",
+        "rationale": "Praise without argument about any frame.",
+        "confidence": 3,
+        "needs_human_review": false,
+        "review_reason": "",
+        "actor_category": "",
+        "actor_self_declared": false,
+        "actor_evidence": ""
+      },
+      "note": "Praise is no-frame."
+    },
+    {
+      "input": {
+        "comment_id": "ex07",
+        "thread_depth": 0,
+        "text": "Força Sr. Presidente"
+      },
+      "output": {
+        "comment_id": "ex07",
+        "is_institutional": false,
+        "frame_id": "SIN",
+        "secondary_frame_id": "",
+        "thread_id": "",
+        "emergent_thread_proposal": "",
+        "stance": "",
+        "evidence_level": "",
+        "literal_excerpt": "",
+        "rationale": "Encouragement without content; names neither reversal nor charges.",
+        "confidence": 3,
+        "needs_human_review": false,
+        "review_reason": "",
+        "actor_category": "",
+        "actor_self_declared": false,
+        "actor_evidence": ""
+      },
+      "note": "Pure encouragement is no-frame."
+    },
+    {
+      "input": {
+        "comment_id": "ex08",
+        "thread_depth": 0,
+        "text": "Reversão em todos os municípios."
+      },
+      "output": {
+        "comment_id": "ex08",
+        "is_institutional": false,
+        "frame_id": "F2",
+        "secondary_frame_id": "",
+        "thread_id": "F2_H4",
+        "emergent_thread_proposal": "",
+        "stance": "supports",
+        "evidence_level": "core",
+        "literal_excerpt": "Reversão em todos os municípios.",
+        "rationale": "Demands reversal of the concession in all municipalities.",
+        "confidence": 3,
+        "needs_human_review": false,
+        "review_reason": "",
+        "actor_category": "",
+        "actor_self_declared": false,
+        "actor_evidence": ""
+      },
+      "note": "An endorsement that names the subject counts."
+    },
+    {
+      "input": {
+        "comment_id": "ex09",
+        "thread_depth": 0,
+        "text": "Eu gasto 30 de água e no fim pago 95"
+      },
+      "output": {
+        "comment_id": "ex09",
+        "is_institutional": false,
+        "frame_id": "F2",
+        "secondary_frame_id": "",
+        "thread_id": "F2_H1",
+        "emergent_thread_proposal": "",
+        "stance": "supports",
+        "evidence_level": "adjacent",
+        "literal_excerpt": "Eu gasto 30 de água e no fim pago 95",
+        "rationale": "Bill far above consumption, with concrete figures.",
+        "confidence": 3,
+        "needs_human_review": false,
+        "review_reason": "",
+        "actor_category": "",
+        "actor_self_declared": false,
+        "actor_evidence": ""
+      },
+      "note": "Concrete figures make a firm adjacent case."
+    },
+    {
+      "input": {
+        "comment_id": "ex10",
+        "thread_depth": 0,
+        "text": "Está tudo errado nessa empresa até o preço da água."
+      },
+      "output": {
+        "comment_id": "ex10",
+        "is_institutional": false,
+        "frame_id": "F2",
+        "secondary_frame_id": "",
+        "thread_id": "F2_H5",
+        "emergent_thread_proposal": "",
+        "stance": "supports",
+        "evidence_level": "adjacent",
+        "literal_excerpt": "até o preço da água",
+        "rationale": "General discontent with the company and price, without an explicit reason.",
+        "confidence": 1,
+        "needs_human_review": true,
+        "review_reason": "weak adjacent",
+        "actor_category": "",
+        "actor_self_declared": false,
+        "actor_evidence": ""
+      },
+      "note": "Weak adjacent: confidence 1, review, single frame."
+    },
+    {
+      "input": {
+        "comment_id": "ex11",
+        "thread_depth": 0,
+        "text": "Ligo para o número e ninguém atende."
+      },
+      "output": {
+        "comment_id": "ex11",
+        "is_institutional": false,
+        "frame_id": "SIN",
+        "secondary_frame_id": "",
+        "thread_id": "",
+        "emergent_thread_proposal": "",
+        "stance": "",
+        "evidence_level": "",
+        "literal_excerpt": "",
+        "rationale": "Customer-service complaint unrelated to billing, price, quality or network failures.",
+        "confidence": 2,
+        "needs_human_review": false,
+        "review_reason": "",
+        "actor_category": "",
+        "actor_self_declared": false,
+        "actor_evidence": ""
+      },
+      "note": "Customer-service complaint without a billing link is no-frame."
+    },
+    {
+      "input": {
+        "comment_id": "ex12",
+        "thread_depth": 1,
+        "text": "Exatamente!!",
+        "parent_text": "Pagamos saneamento sem ter saneamento!"
+      },
+      "output": {
+        "comment_id": "ex12",
+        "is_institutional": false,
+        "frame_id": "F2",
+        "secondary_frame_id": "",
+        "thread_id": "F2_H1",
+        "emergent_thread_proposal": "",
+        "stance": "supports",
+        "evidence_level": "adjacent",
+        "literal_excerpt": "Exatamente!!",
+        "rationale": "Agreement understood only through the parent comment (sanitation charge without service).",
+        "confidence": 1,
+        "needs_human_review": true,
+        "review_reason": "depends on parent comment",
+        "actor_category": "",
+        "actor_self_declared": false,
+        "actor_evidence": ""
+      },
+      "note": "Bare agreement inherits the parent's frame with confidence 1."
+    },
+    {
+      "input": {
+        "comment_id": "ex13",
+        "thread_depth": 0,
+        "text": "Tenho nascente própria e furo a 110 m, não preciso da AdAM."
+      },
+      "output": {
+        "comment_id": "ex13",
+        "is_institutional": false,
+        "frame_id": "F2",
+        "secondary_frame_id": "F1",
+        "thread_id": "F2_H3",
+        "emergent_thread_proposal": "",
+        "stance": "supports",
+        "evidence_level": "core",
+        "literal_excerpt": "Tenho nascente própria e furo a 110 m, não preciso da AdAM",
+        "rationale": "Keeps own spring and borehole as an exit from the concessionaire.",
+        "confidence": 3,
+        "needs_human_review": false,
+        "review_reason": "",
+        "actor_category": "private_source_user",
+        "actor_self_declared": true,
+        "actor_evidence": "Tenho nascente própria e furo a 110 m"
+      },
+      "note": "Individual exit with a self-declared private source."
+    }
+  ]
+}

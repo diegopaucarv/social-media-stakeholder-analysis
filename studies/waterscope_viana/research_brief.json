@@ -1,0 +1,21 @@
+{
+  "seed_frames": [
+    {
+      "label": "Quality beliefs and false sense of safety",
+      "argument": "Water from the family mine or well does not need testing because it looks clear, flows continuously and has been consumed for generations without any perceived illness."
+    },
+    {
+      "label": "Tariff resistance and rejection of centralised management",
+      "argument": "AdAM bills and charges are seen as disproportionate compared with historical local costs, leading residents to keep or reactivate their own wells to avoid mandatory charges."
+    },
+    {
+      "label": "Institutional distrust and perceived environmental hypocrisy",
+      "argument": "Municipal alerts advising against drinking from public fountains are met with scepticism; residents accuse public bodies of ignoring industrial or wastewater-plant discharges into rivers."
+    },
+    {
+      "label": "Invisible risks and public-network supply failures",
+      "argument": "The municipal public supply is not seen as an absolute guarantee of safety, which motivates the search for underground alternatives even without control of nitrates or bacteria."
+    }
+  ],
+  "researcher_instructions": "Extract the exact argument used by residents (why they trust or reject each source), not just the general topic. Prefer short, concrete threads. Keep the corpus language in literal excerpts."
+}

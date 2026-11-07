@@ -1,0 +1,11 @@
+{
+  "schema_version": "1.0",
+  "study_id": "waterscope_viana",
+  "modules": {
+    "study": "study.json",
+    "sources": "sources.json",
+    "actors": "actors.json",
+    "locations": "locations.json",
+    "codebook": "codebook.json"
+  }
+}

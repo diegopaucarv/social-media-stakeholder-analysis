@@ -1,0 +1,77 @@
+{
+  "no_frame": {
+    "id": "NO_FRAME",
+    "label": "No frame",
+    "description": "Nothing about bike lanes."
+  },
+  "frames": [
+    {
+      "id": "A",
+      "label": "Safety",
+      "argument": "Protected lanes make streets safer for everybody.",
+      "threads": [
+        {
+          "id": "A_1",
+          "label": "Accidents with cars",
+          "description": "Cyclists are hit by cars on streets without lanes."
+        },
+        {
+          "id": "A_2",
+          "label": "Children and schools",
+          "description": "Children need safe routes to school."
+        }
+      ]
+    },
+    {
+      "id": "B",
+      "label": "Cost and priorities",
+      "argument": "Money for lanes should go to other needs.",
+      "threads": [
+        {
+          "id": "B_1",
+          "label": "Lost parking",
+          "description": "Lanes remove parking spaces and hurt shops."
+        }
+      ]
+    }
+  ],
+  "stance_definitions": {
+    "supports": "Sustains the thread.",
+    "opposes": "Rebuts the thread.",
+    "qualifies": "Partly agrees."
+  },
+  "evidence_definitions": {
+    "core": "States the target argument.",
+    "adjacent": "Related evidence."
+  },
+  "decision_rules": [
+    "Parking complaints are B_1 even if the author also mentions safety."
+  ],
+  "examples": [
+    {
+      "input": {
+        "comment_id": "t1",
+        "thread_depth": 0,
+        "text": "I was almost hit by a car on Main Street yesterday."
+      },
+      "output": {
+        "comment_id": "t1",
+        "is_institutional": false,
+        "frame_id": "A",
+        "secondary_frame_id": "",
+        "thread_id": "A_1",
+        "emergent_thread_proposal": "",
+        "stance": "supports",
+        "evidence_level": "core",
+        "literal_excerpt": "I was almost hit by a car",
+        "rationale": "Near-miss with a car.",
+        "confidence": 3,
+        "needs_human_review": false,
+        "review_reason": "",
+        "actor_category": "",
+        "actor_self_declared": false,
+        "actor_evidence": ""
+      }
+    }
+  ]
+}

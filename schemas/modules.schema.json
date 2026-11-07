@@ -1,0 +1,502 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Framing pipeline - study module schemas",
+  "description": "One definition per study module. Validate a module with {\"$ref\": \"#/$defs/<module>\"}.",
+  "$defs": {
+    "manifest": {
+      "type": "object",
+      "required": ["schema_version", "study_id", "modules"],
+      "properties": {
+        "schema_version": { "const": "1.0" },
+        "study_id": { "type": "string", "minLength": 1 },
+        "modules": {
+          "type": "object",
+          "required": ["study", "sources", "actors", "locations", "codebook"],
+          "properties": {
+            "study": { "type": "string" },
+            "sources": { "type": "string" },
+            "actors": { "type": "string" },
+            "locations": { "type": "string" },
+            "codebook": { "type": "string" }
+          },
+          "additionalProperties": false
+        }
+      },
+      "additionalProperties": false
+    },
+
+    "study": {
+      "type": "object",
+      "required": ["id", "title", "objective", "context", "corpus_language"],
+      "properties": {
+        "id": { "type": "string", "minLength": 1 },
+        "title": { "type": "string", "minLength": 1 },
+        "objective": { "type": "string", "minLength": 1 },
+        "context": { "type": "string", "minLength": 1 },
+        "corpus_language": { "type": "string", "minLength": 1 },
+        "analysis_language": { "type": "string" },
+        "language_notes": { "type": "string" },
+        "input_schema": { "type": "object" },
+        "relevance": {
+          "type": "object",
+          "properties": {
+            "likes_weight": { "type": "number", "minimum": 0 },
+            "reply_weight": { "type": "number", "minimum": 0 },
+            "high_threshold": { "type": "number", "minimum": 0 },
+            "medium_threshold": { "type": "number", "minimum": 0 }
+          },
+          "additionalProperties": false
+        },
+        "period": {
+          "type": "object",
+          "properties": {
+            "cutoff_date": { "type": ["string", "null"] },
+            "before_label": { "type": "string" },
+            "after_label": { "type": "string" }
+          },
+          "additionalProperties": false
+        },
+        "classification": {
+          "type": "object",
+          "properties": {
+            "batch_size": { "type": "integer", "minimum": 1 },
+            "post_batch_size": { "type": "integer", "minimum": 1 },
+            "min_confidence": { "type": "integer", "minimum": 1, "maximum": 3 },
+            "parent_text_max_chars": { "type": "integer", "minimum": 0 }
+          },
+          "additionalProperties": false
+        },
+        "contacts": {
+          "type": "object",
+          "properties": {
+            "min_comments_for_activity_candidate": {
+              "type": "integer",
+              "minimum": 1
+            }
+          },
+          "additionalProperties": false
+        },
+        "stats": {
+          "type": "object",
+          "properties": {
+            "focus_source_group": { "type": ["string", "null"] },
+            "min_expected_warning": { "type": "number", "minimum": 0 },
+            "bootstrap_iterations": { "type": "integer", "minimum": 0 },
+            "seed": { "type": "integer" },
+            "gender_values": { "type": "array", "items": { "type": "string" } },
+            "tests": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "required": ["id", "name", "kind", "pop"],
+                "properties": {
+                  "id": { "type": "string", "minLength": 1 },
+                  "name": { "type": "string", "minLength": 1 },
+                  "kind": {
+                    "enum": [
+                      "omnibus",
+                      "one_vs_rest",
+                      "any_frame",
+                      "thread_within_frame"
+                    ]
+                  },
+                  "pop": {
+                    "enum": [
+                      "citizen",
+                      "coded",
+                      "citizen_gender",
+                      "coded_dedup"
+                    ]
+                  },
+                  "row": { "type": "string" },
+                  "col": { "type": "string" },
+                  "note": { "type": "string" }
+                },
+                "additionalProperties": false
+              }
+            }
+          },
+          "additionalProperties": false
+        },
+        "gap_checks": {
+          "type": "object",
+          "properties": {
+            "min_frame_comments": { "type": "integer", "minimum": 1 },
+            "min_thread_comments": { "type": "integer", "minimum": 1 },
+            "min_posts_for_pooled_tests": { "type": "integer", "minimum": 1 },
+            "min_comments_per_year": { "type": "integer", "minimum": 1 },
+            "join_warning_share": {
+              "type": "number",
+              "minimum": 0,
+              "maximum": 1
+            },
+            "sparse_frame_comments": { "type": "integer", "minimum": 1 },
+            "severe_frame_comments": { "type": "integer", "minimum": 1 },
+            "expected_terms": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "required": ["label", "pattern"],
+                "properties": {
+                  "label": { "type": "string" },
+                  "pattern": { "type": "string" }
+                },
+                "additionalProperties": false
+              }
+            }
+          },
+          "additionalProperties": false
+        },
+        "ethics": {
+          "type": "object",
+          "properties": {
+            "enabled": { "type": "boolean" },
+            "text": { "type": "string" },
+            "users_note": { "type": "string" }
+          },
+          "additionalProperties": false
+        },
+        "deliverables": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": ["id", "description", "artifacts"],
+            "properties": {
+              "id": { "type": "string", "minLength": 1 },
+              "task": { "type": "string" },
+              "description": { "type": "string" },
+              "artifacts": { "type": "array", "items": { "type": "string" } },
+              "manual_followup": { "type": "string" }
+            },
+            "additionalProperties": false
+          }
+        }
+      },
+      "additionalProperties": false
+    },
+
+    "sources": {
+      "type": "object",
+      "required": ["source_types", "registry", "institutional_authors"],
+      "properties": {
+        "source_types": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "object",
+            "required": ["id", "label", "stats_group"],
+            "properties": {
+              "id": { "type": "string" },
+              "label": { "type": "string" },
+              "stats_group": { "type": "string" }
+            },
+            "additionalProperties": false
+          }
+        },
+        "registry": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": ["key", "kind", "type"],
+            "properties": {
+              "key": { "type": "string", "minLength": 1 },
+              "kind": { "enum": ["page", "group", "profile"] },
+              "url": { "type": "string" },
+              "name": { "type": "string" },
+              "type": { "type": "string" },
+              "type_verified": { "type": "boolean" }
+            },
+            "additionalProperties": false
+          }
+        },
+        "institutional_authors": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": ["name", "actor_category"],
+            "properties": {
+              "name": { "type": "string" },
+              "actor_category": { "type": "string" }
+            },
+            "additionalProperties": false
+          }
+        }
+      },
+      "additionalProperties": false
+    },
+
+    "actors": {
+      "type": "object",
+      "required": ["levels"],
+      "properties": {
+        "levels": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "object",
+            "required": ["id", "label", "categories"],
+            "properties": {
+              "id": { "type": "string" },
+              "label": { "type": "string" },
+              "coverage_check": { "type": "boolean" },
+              "categories": {
+                "type": "array",
+                "minItems": 1,
+                "items": {
+                  "type": "object",
+                  "required": ["id", "label", "description"],
+                  "properties": {
+                    "id": { "type": "string" },
+                    "label": { "type": "string" },
+                    "description": { "type": "string" },
+                    "contact_candidate": { "type": "boolean" }
+                  },
+                  "additionalProperties": false
+                }
+              }
+            },
+            "additionalProperties": false
+          }
+        }
+      },
+      "additionalProperties": false
+    },
+
+    "locations": {
+      "type": "object",
+      "required": ["gazetteer"],
+      "properties": {
+        "gazetteer": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": ["name", "level"],
+            "properties": {
+              "name": { "type": "string", "minLength": 1 },
+              "level": { "type": "string", "minLength": 1 },
+              "aliases": { "type": "array", "items": { "type": "string" } },
+              "in_study_area": { "type": "boolean" }
+            },
+            "additionalProperties": false
+          }
+        },
+        "coverage_audit": {
+          "type": "object",
+          "properties": { "level": { "type": "string" } },
+          "additionalProperties": false
+        },
+        "community_relevance": {
+          "type": "object",
+          "properties": {
+            "data_gaps_note": { "type": "string" },
+            "indicators": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "required": ["id", "label", "weight"],
+                "properties": {
+                  "id": { "type": "string" },
+                  "label": { "type": "string" },
+                  "weight": { "type": "number" },
+                  "thread_ids": {
+                    "type": "array",
+                    "items": { "type": "string" }
+                  },
+                  "frame_ids": {
+                    "type": "array",
+                    "items": { "type": "string" }
+                  },
+                  "actor_categories": {
+                    "type": "array",
+                    "items": { "type": "string" }
+                  }
+                },
+                "additionalProperties": false
+              }
+            }
+          },
+          "additionalProperties": false
+        }
+      },
+      "additionalProperties": false
+    },
+
+    "codebook": {
+      "type": "object",
+      "required": [
+        "no_frame",
+        "frames",
+        "stance_definitions",
+        "evidence_definitions",
+        "decision_rules",
+        "examples"
+      ],
+      "properties": {
+        "no_frame": {
+          "type": "object",
+          "required": ["id", "label", "description"],
+          "properties": {
+            "id": { "type": "string" },
+            "label": { "type": "string" },
+            "description": { "type": "string" }
+          },
+          "additionalProperties": false
+        },
+        "frames": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "object",
+            "required": ["id", "label", "argument", "threads"],
+            "properties": {
+              "id": { "type": "string" },
+              "label": { "type": "string" },
+              "argument": { "type": "string" },
+              "threads": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "required": ["id", "label", "description"],
+                  "properties": {
+                    "id": { "type": "string" },
+                    "label": { "type": "string" },
+                    "description": { "type": "string" }
+                  },
+                  "additionalProperties": false
+                }
+              }
+            },
+            "additionalProperties": false
+          }
+        },
+        "stance_definitions": {
+          "type": "object",
+          "required": ["supports", "opposes", "qualifies"],
+          "properties": {
+            "supports": { "type": "string" },
+            "opposes": { "type": "string" },
+            "qualifies": { "type": "string" }
+          },
+          "additionalProperties": false
+        },
+        "evidence_definitions": {
+          "type": "object",
+          "required": ["core", "adjacent"],
+          "properties": {
+            "core": { "type": "string" },
+            "adjacent": { "type": "string" }
+          },
+          "additionalProperties": false
+        },
+        "decision_rules": { "type": "array", "items": { "type": "string" } },
+        "examples": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": ["input", "output"],
+            "properties": {
+              "input": {
+                "type": "object",
+                "required": ["comment_id", "text"],
+                "properties": {
+                  "comment_id": { "type": "string" },
+                  "thread_depth": { "type": "integer", "minimum": 0 },
+                  "text": { "type": "string" },
+                  "parent_text": { "type": "string" }
+                },
+                "additionalProperties": false
+              },
+              "output": { "type": "object" },
+              "note": { "type": "string" }
+            },
+            "additionalProperties": false
+          }
+        }
+      },
+      "additionalProperties": false
+    },
+
+    "research_brief": {
+      "type": "object",
+      "required": ["seed_frames"],
+      "properties": {
+        "seed_frames": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "object",
+            "required": ["label", "argument"],
+            "properties": {
+              "label": { "type": "string" },
+              "argument": { "type": "string" }
+            },
+            "additionalProperties": false
+          }
+        },
+        "researcher_instructions": { "type": "string" }
+      },
+      "additionalProperties": false
+    },
+
+    "discovery_output": {
+      "type": "object",
+      "required": ["round", "codebook", "changelog", "saturation"],
+      "properties": {
+        "round": { "type": "integer", "minimum": 1 },
+        "codebook": { "$ref": "#/$defs/codebook" },
+        "changelog": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": ["op", "target", "reason"],
+            "properties": {
+              "op": {
+                "enum": [
+                  "add_frame",
+                  "edit_frame",
+                  "add_thread",
+                  "edit_thread",
+                  "merge_threads",
+                  "split_thread",
+                  "retire_thread",
+                  "add_rule",
+                  "edit_rule",
+                  "add_example",
+                  "edit_example",
+                  "no_change"
+                ]
+              },
+              "target": { "type": "string" },
+              "reason": { "type": "string" },
+              "evidence_comment_ids": {
+                "type": "array",
+                "items": { "type": "string" }
+              }
+            },
+            "additionalProperties": false
+          }
+        },
+        "saturation": {
+          "type": "object",
+          "required": [
+            "new_threads_this_round",
+            "sample_coverage_share",
+            "is_saturated"
+          ],
+          "properties": {
+            "new_threads_this_round": { "type": "integer", "minimum": 0 },
+            "sample_coverage_share": {
+              "type": "number",
+              "minimum": 0,
+              "maximum": 1
+            },
+            "is_saturated": { "type": "boolean" }
+          },
+          "additionalProperties": false
+        },
+        "open_questions": { "type": "array", "items": { "type": "string" } }
+      },
+      "additionalProperties": false
+    }
+  }
+}

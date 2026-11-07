@@ -1,0 +1,40 @@
+@startuml
+skinparam shadowing false
+skinparam defaultFontName Arial
+skinparam rectangle {
+  RoundCorner 8
+  BorderColor #34495e
+}
+skinparam ArrowColor #34495e
+left to right direction
+
+rectangle "FASE 1\nIdentificación y selección de posts" as F1 #DCEBF7 {
+  rectangle "Eventos clave en medios\ny YouTube (apoyo de Gemini)" as A1
+  rectangle "Keywords y\norganizaciones clave" as A2
+  rectangle "Búsqueda manual exhaustiva\nen Facebook (keyword \"águas\")" as A3
+  rectangle "Seguir páginas y\nunirse a grupos clave" as A4
+  rectangle "Selección de posts con\nmás de 2 comentarios" as A5
+  A1 --> A2
+  A2 --> A3
+  A3 --> A4
+  A4 --> A3 : búsqueda\niterativa
+  A3 --> A5
+}
+
+rectangle "FASE 2\nDescarga y estructuración" as F2 #E3F4E1 {
+  rectangle "Descarga de comentarios\ncon Apify (Facebook Comments Scraper)\nusando los links de los posts" as B1
+  rectangle "Línea de tiempo de comentarios:\nrelevantes (likes/respuestas) e hilos" as B2
+  B1 --> B2
+}
+
+rectangle "FASE 3\nClasificación, análisis y visualización" as F3 #FBEBD5 {
+  rectangle "Clasificación de posts y comentarios\npor frames (Claude)" as C1
+  rectangle "Análisis estadístico\nchi cuadrado (Yates) + V de Cramér" as C2
+  rectangle "Red interactiva\ncon JavaScript (Cytoscape)" as C3
+  C1 --> C2
+  C1 --> C3
+}
+
+F1 --> F2 : links de\nposts
+F2 --> F3 : CSV de\ncomentarios
+@enduml

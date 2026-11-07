@@ -1,0 +1,83 @@
+{
+  "levels": [
+    {
+      "id": "micro",
+      "label": "Microsystem (end users and ambassadors)",
+      "categories": [
+        {
+          "id": "private_source_user",
+          "label": "Private source owner/user",
+          "description": "Owners and users of private vertical wells and traditional water mines.",
+          "contact_candidate": false
+        },
+        {
+          "id": "public_fountain_user",
+          "label": "Public fountain user",
+          "description": "Everyday users of public fountains, springs and public water points.",
+          "contact_candidate": false
+        },
+        {
+          "id": "science_teacher_or_student",
+          "label": "Science teacher or student",
+          "description": "Science teachers of local secondary schools and students involved in school projects.",
+          "contact_candidate": true
+        },
+        {
+          "id": "informal_water_steward",
+          "label": "Informal water steward",
+          "description": "Informal guardians of water (Water Stewards), often responsible for opening or routing irrigation water.",
+          "contact_candidate": true
+        }
+      ]
+    },
+    {
+      "id": "meso",
+      "label": "Mesosystem (community intermediaries)",
+      "categories": [
+        {
+          "id": "parish_council_member",
+          "label": "Parish council member",
+          "description": "Members and presidents of the local parish councils (Juntas de Freguesia).",
+          "contact_candidate": false
+        },
+        {
+          "id": "community_association_leader",
+          "label": "Community association leader",
+          "description": "Leaders of community associations, commoners' committees (comissões de compartes) and civic collectives.",
+          "contact_candidate": true
+        },
+        {
+          "id": "irrigation_farmer",
+          "label": "Irrigation farmer",
+          "description": "Local farmers and agricultural water users organised around levadas and irrigation systems.",
+          "contact_candidate": true
+        }
+      ]
+    },
+    {
+      "id": "exo_macro",
+      "label": "Exosystem and macrosystem (targets of debate and regulators)",
+      "coverage_check": false,
+      "categories": [
+        {
+          "id": "utility_concessionaire",
+          "label": "Utility concessionaire",
+          "description": "Water supply and sanitation concessionaires: Águas do Alto Minho (AdAM) and Águas do Norte.",
+          "contact_candidate": false
+        },
+        {
+          "id": "municipality_and_services",
+          "label": "Municipality and municipal services",
+          "description": "Viana do Castelo municipal council and the municipalised services.",
+          "contact_candidate": false
+        },
+        {
+          "id": "health_environment_authority",
+          "label": "Health and environment authority",
+          "description": "USP Alto Minho, the ULS environmental health laboratory and the Portuguese Environment Agency (APA).",
+          "contact_candidate": false
+        }
+      ]
+    }
+  ]
+}

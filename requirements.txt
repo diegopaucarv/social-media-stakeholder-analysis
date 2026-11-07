@@ -1,0 +1,9 @@
+pandas>=2.0
+numpy>=1.24
+scipy>=1.10
+# Optional: real JSON-Schema validation. Without it the pipeline falls back to
+# framing/jsonschema_lite.py, which covers the subset used by the study modules.
+jsonschema>=4.20
+# Optional: progress bars on stderr. Without it the pipeline still runs, it just
+# does not draw a bar (framing/progress.py degrades gracefully).
+tqdm>=4.66

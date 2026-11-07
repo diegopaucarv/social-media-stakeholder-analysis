@@ -1,0 +1,186 @@
+{
+  "gazetteer": [
+    {
+      "name": "Viana do Castelo",
+      "level": "municipality",
+      "aliases": ["Viana"],
+      "in_study_area": true
+    },
+    {
+      "name": "Ponte de Lima",
+      "level": "municipality",
+      "aliases": [],
+      "in_study_area": true
+    },
+    {
+      "name": "Caminha",
+      "level": "municipality",
+      "aliases": [],
+      "in_study_area": true
+    },
+    {
+      "name": "Valença",
+      "level": "municipality",
+      "aliases": [],
+      "in_study_area": true
+    },
+    {
+      "name": "Arcos de Valdevez",
+      "level": "municipality",
+      "aliases": [],
+      "in_study_area": true
+    },
+    {
+      "name": "Ponte da Barca",
+      "level": "municipality",
+      "aliases": [],
+      "in_study_area": true
+    },
+    {
+      "name": "Monção",
+      "level": "municipality",
+      "aliases": [],
+      "in_study_area": true
+    },
+    {
+      "name": "Melgaço",
+      "level": "municipality",
+      "aliases": [],
+      "in_study_area": true
+    },
+    {
+      "name": "Paredes de Coura",
+      "level": "municipality",
+      "aliases": [],
+      "in_study_area": true
+    },
+    {
+      "name": "Vila Nova de Cerveira",
+      "level": "municipality",
+      "aliases": ["Cerveira"],
+      "in_study_area": true
+    },
+    {
+      "name": "Freixo",
+      "level": "locality",
+      "aliases": [],
+      "in_study_area": true
+    },
+    {
+      "name": "Mujães",
+      "level": "locality",
+      "aliases": [],
+      "in_study_area": true
+    },
+    {
+      "name": "Refoios",
+      "level": "locality",
+      "aliases": [],
+      "in_study_area": true
+    },
+    {
+      "name": "Rebordões",
+      "level": "locality",
+      "aliases": [],
+      "in_study_area": true
+    },
+    {
+      "name": "Neiva",
+      "level": "locality",
+      "aliases": [],
+      "in_study_area": true
+    },
+    {
+      "name": "Afife",
+      "level": "locality",
+      "aliases": [],
+      "in_study_area": true
+    },
+    {
+      "name": "Âncora",
+      "level": "locality",
+      "aliases": [],
+      "in_study_area": true
+    },
+    {
+      "name": "Arca",
+      "level": "locality",
+      "aliases": [],
+      "in_study_area": true
+    },
+    {
+      "name": "Venade",
+      "level": "locality",
+      "aliases": [],
+      "in_study_area": true
+    },
+    {
+      "name": "Senhora da Luz",
+      "level": "locality",
+      "aliases": [],
+      "in_study_area": true
+    },
+    {
+      "name": "Ganhei",
+      "level": "locality",
+      "aliases": [],
+      "in_study_area": true
+    },
+    {
+      "name": "Soutelo",
+      "level": "locality",
+      "aliases": [],
+      "in_study_area": true
+    },
+    {
+      "name": "Azevedo",
+      "level": "locality",
+      "aliases": [],
+      "in_study_area": true
+    },
+    {
+      "name": "Gaia",
+      "level": "municipality",
+      "aliases": [],
+      "in_study_area": false
+    },
+    {
+      "name": "Porto",
+      "level": "municipality",
+      "aliases": [],
+      "in_study_area": false
+    }
+  ],
+  "coverage_audit": {
+    "level": "municipality"
+  },
+  "community_relevance": {
+    "data_gaps_note": "Discourse-based proxy only. Needs external data: network coverage per parish, number of private sources, sanitary-alert history (USP, ULS, APA, ERSAR).",
+    "indicators": [
+      {
+        "id": "private_source_dependence",
+        "label": "Dependence on private sources",
+        "weight": 2.0,
+        "thread_ids": ["F1_H1", "F1_H2", "F1_H3", "F1_H4", "F2_H3"],
+        "frame_ids": [],
+        "actor_categories": ["private_source_user", "public_fountain_user"]
+      },
+      {
+        "id": "quality_or_pollution_concern",
+        "label": "Water-quality or pollution concern",
+        "weight": 1.5,
+        "thread_ids": ["F3_H1", "F3_H4", "F4_H1", "F4_H3"],
+        "frame_ids": [],
+        "actor_categories": []
+      },
+      {
+        "id": "monitoring_absence_signal",
+        "label": "Signals of absent or lapsed monitoring",
+        "weight": 1.0,
+        "thread_ids": ["F3_H3", "F1_H3"],
+        "frame_ids": [],
+        "actor_categories": []
+      }
+    ]
+  }
+}

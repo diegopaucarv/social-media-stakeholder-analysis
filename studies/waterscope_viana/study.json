@@ -1,0 +1,117 @@
+{
+  "id": "waterscope_viana",
+  "title": "Private water sources, tariffs and institutional trust in Viana do Castelo / Alto Minho",
+  "objective": "Extract the exact arguments residents use to trust or reject water sources and water institutions; assess how relevant private water-source monitoring is for local communities; and identify potential community contact points (e.g. water stewards, teachers, association leaders) for future participatory workshops.",
+  "context": "Participatory study on the relevance of monitoring private water sources (wells, traditional water mines, springs, boreholes, public fountains) in communities of Viana do Castelo and the Alto Minho region (Portugal). Comments come from Facebook posts published by the multimunicipal water concessionaire Águas do Alto Minho (AdAM), municipalities, local media, civic groups and citizen profiles. Central actors: AdAM and Águas do Norte (concessionaires), the municipal councils and municipal services, health and environment authorities (USP Alto Minho, ULS environmental health laboratory, APA, ERSAR), residents with their own water source, farmers organised around irrigation channels (levadas), parish councils and civic associations.",
+  "corpus_language": "pt-PT",
+  "analysis_language": "en",
+  "language_notes": "Comments are in European Portuguese with Alto Minho regionalisms, misspellings, abbreviations and irony; some use Galician-like spelling. Glossary: poço = dug well, mina = traditional spring-fed water mine, nascente = spring, furo = borehole, fonte/fontanário = public fountain, levada = irrigation channel, esgoto = sewage, ETAR = wastewater treatment plant, ETA = drinking-water treatment plant, contador = meter, saneamento = sanitation charge, freguesia = parish, junta = parish council, câmara = municipal council, reversão = reversal of the multimunicipal concession.",
+  "relevance": {
+    "likes_weight": 1,
+    "reply_weight": 2,
+    "high_threshold": 6,
+    "medium_threshold": 3
+  },
+  "period": {
+    "cutoff_date": "2026-01-01",
+    "before_label": "pre-2026",
+    "after_label": "2026"
+  },
+  "classification": {
+    "batch_size": 30,
+    "post_batch_size": 20,
+    "min_confidence": 1,
+    "parent_text_max_chars": 400
+  },
+  "contacts": {
+    "min_comments_for_activity_candidate": 5
+  },
+  "stats": {
+    "focus_source_group": "concessionaire",
+    "min_expected_warning": 5,
+    "bootstrap_iterations": 1000,
+    "seed": 1,
+    "gender_values": ["M", "F"]
+  },
+  "gap_checks": {
+    "min_frame_comments": 30,
+    "min_thread_comments": 5,
+    "min_posts_for_pooled_tests": 30,
+    "min_comments_per_year": 20,
+    "expected_terms": [
+      {
+        "label": "nitrates",
+        "pattern": "nitrat"
+      },
+      {
+        "label": "coliforms / bacteria",
+        "pattern": "coliform|bact[eé]ri"
+      },
+      {
+        "label": "laboratory testing",
+        "pattern": "laborat|an[aá]lis"
+      },
+      {
+        "label": "health / environment authorities",
+        "pattern": "ERSAR|\\bAPA\\b|\\bUSP\\b|\\bARS\\b|sa[uú]de p[uú]blica"
+      },
+      {
+        "label": "irrigation channels",
+        "pattern": "levada|regadio|\\brega\\b"
+      },
+      {
+        "label": "schools / teachers",
+        "pattern": "professor|escola|aluno"
+      },
+      {
+        "label": "parish councils",
+        "pattern": "junta de freguesia|presidente da junta"
+      }
+    ]
+  },
+  "deliverables": [
+    {
+      "id": "T1_communities",
+      "task": "Task 1",
+      "description": "Local community groups and pages identified (registry coverage vs. observed sources).",
+      "artifacts": ["10_source_coverage.csv", "03_posts_classified.csv"],
+      "manual_followup": "Search and join missing registered groups/pages; look for parish-council pages and neighbours' civic groups."
+    },
+    {
+      "id": "T1_discussions",
+      "task": "Task 1",
+      "description": "Exact arguments mobilised by residents (why they trust or reject water sources), not only the topic label.",
+      "artifacts": ["01_selected_comments.csv", "05_phases_timeline.csv"],
+      "manual_followup": ""
+    },
+    {
+      "id": "T1_key_people",
+      "task": "Task 1",
+      "description": "Most active and influential authors, protest organisers, formal and informal leaders.",
+      "artifacts": ["04_users_profile.csv"],
+      "manual_followup": "Validate roles by hand; user profiles are public data of private persons."
+    },
+
+    {
+      "id": "T2_posts",
+      "task": "Task 2",
+      "description": "Relevant posts and discussions with permanent links or screenshots.",
+      "artifacts": ["03_posts_classified.csv", "01_selected_comments.csv"],
+      "manual_followup": "Screenshots must be captured manually (links can be deleted or change)."
+    },
+    {
+      "id": "T2_contacts",
+      "task": "Task 2",
+      "description": "Community contact candidates (water stewards, teachers, association and irrigation leaders).",
+      "artifacts": ["04_users_profile.csv"],
+      "manual_followup": "Candidates are not consented contacts: apply the ethics and data-protection protocol before any approach."
+    },
+    {
+      "id": "A_stats",
+      "task": "Analysis",
+      "description": "Chi-square tests (Yates correction for 2x2) and Cramer's V.",
+      "artifacts": ["08_stats.csv", "09_contingency_tables.txt"],
+      "manual_followup": ""
+    }
+  ]
+}

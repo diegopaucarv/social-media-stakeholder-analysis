@@ -1,0 +1,30 @@
+﻿prueba,tipo,variables,n,gl,chi2,p,V_Cramer,V_Cramer_corregida_sesgo,V_IC95_bootstrap,pct_celdas_esperado_<5,min_esperado,nota,p_fisher_exacto,odds_ratio,tabla,p_holm,sig_0.05,sig_holm_0.05
+T1 marco x tipo de espacio,omnibus RxC (chi2 de Pearson; Yates no aplica si gl>1),marco x espacio4,585,12,105.324,5.012e-17,0.245,0.231,"[0.202, 0.299]",40.0,0.38,Comentarios ciudadanos con texto (excluye respuestas institucionales),,,,,sí,
+T1b F1 vs resto x página AdAM vs otros espacios,2x2 (chi2 con corrección de Yates),is_F1 x adam,585,1,3.717,0.05386,0.095,,,50.0,3.15,,0.025097169616264976,,"[[230, 347], [0, 8]]",0.8079050303785958,no,no
+T1b F2 vs resto x página AdAM vs otros espacios,2x2 (chi2 con corrección de Yates),is_F2 x adam,585,1,44.386,2.696e-11,0.28,,,0.0,44.43,,2.4565804800022005e-11,0.236,"[[154, 318], [76, 37]]",5.661320523150476e-10,sí,sí
+T1b F3 vs resto x página AdAM vs otros espacios,2x2 (chi2 con corrección de Yates),is_F3 x adam,585,1,0.959,0.3273,0.047,,,0.0,16.51,,0.2560945114443608,0.694,"[[210, 333], [20, 22]]",1.0,no,no
+T1b F4 vs resto x página AdAM vs otros espacios,2x2 (chi2 con corrección de Yates),is_F4 x adam,585,1,7.486,0.006217,0.122,,,0.0,8.65,,0.0028988711300298423,6.806,"[[228, 335], [2, 20]]",0.10568627190928068,sí,no
+T1c algún marco vs ninguno x página AdAM vs otros,2x2 (chi2 con corrección de Yates),algun_marco x adam,585,1,20.321,6.546e-06,0.19,,,0.0,72.74,,5.167541750535145e-06,0.437,"[[132, 268], [98, 87]]",0.00012437840732656226,sí,sí
+T2 marco x periodo del post,omnibus RxC (chi2 de Pearson; Yates no aplica si gl>1),marco x periodo,585,4,44.269,5.642e-09,0.275,0.263,"[0.190, 0.360]",10.0,2.16,,,,,,sí,
+T2b F1 vs resto x periodo (2026 vs pre-2026),2x2 (chi2 con corrección de Yates),is_F1 x periodo,585,1,1.773,0.183,0.072,,,25.0,2.16,,0.11582392407420825,,"[[158, 419], [0, 8]]",1.0,no,no
+T2b F2 vs resto x periodo (2026 vs pre-2026),2x2 (chi2 con corrección de Yates),is_F2 x periodo,585,1,31.994,1.546e-08,0.239,,,0.0,30.52,,3.3066108932200794e-08,0.294,"[[103, 369], [55, 58]]",3.0924745888570994e-07,sí,sí
+T2b F3 vs resto x periodo (2026 vs pre-2026),2x2 (chi2 con corrección de Yates),is_F3 x periodo,585,1,2.248,0.1338,0.069,,,0.0,11.34,,0.10491723729963816,0.575,"[[142, 401], [16, 26]]",1.0,no,no
+T2b F4 vs resto x periodo (2026 vs pre-2026),2x2 (chi2 con corrección de Yates),is_F4 x periodo,585,1,4.727,0.02969,0.1,,,0.0,5.94,,0.012977908584466815,8.121,"[[157, 406], [1, 21]]",0.4750831204561966,sí,no
+T3 marco x tipo de comentario (raíz/respuesta),omnibus RxC (chi2 de Pearson; Yates no aplica si gl>1),marco x es_respuesta,585,4,2.939,0.5681,0.071,0.0,"[0.060, 0.147]",10.0,2.05,,,,,,no,
+T3b F1 vs resto x respuesta (sí/no),2x2 (chi2 con corrección de Yates),is_F1 x es_respuesta,585,1,1.6,0.206,0.069,,,25.0,2.05,,0.12135629026206855,0.0,"[[427, 150], [8, 0]]",1.0,no,no
+T3b F2 vs resto x respuesta (sí/no),2x2 (chi2 con corrección de Yates),is_F2 x es_respuesta,585,1,0.016,0.8997,0.01,,,0.0,28.97,,0.8110573372417013,1.06,"[[352, 120], [83, 30]]",1.0,no,no
+T3b F3 vs resto x respuesta (sí/no),2x2 (chi2 con corrección de Yates),is_F3 x es_respuesta,585,1,0.01,0.9213,0.012,,,0.0,10.77,,0.8563165010184973,0.9,"[[403, 140], [32, 10]]",1.0,no,no
+T3b F4 vs resto x respuesta (sí/no),2x2 (chi2 con corrección de Yates),is_F4 x es_respuesta,585,1,0.0,1.0,0.007,,,0.0,5.64,,0.8073734721302392,1.091,"[[419, 144], [16, 6]]",1.0,no,no
+T4 marco x relevancia alta (SOLO comentarios codificados; evita circularidad de selección),omnibus RxC (chi2 de Pearson; Yates no aplica si gl>1),marco x alta,185,3,1.061,0.7865,0.076,0.0,"[0.043, 0.231]",12.5,1.95,Los comentarios SIN marco no se usan porque la selección manual tuvo en cuenta likes,,,,,no,
+"T4b F1 vs otros marcos x relevancia alta (score>=6), solo codificados",2x2 (chi2 con corrección de Yates),is_F1 x alta,185,1,0.141,0.7071,0.059,,,25.0,1.95,,0.6817984831536459,0.432,"[[133, 44], [7, 1]]",1.0,no,no
+"T4b F2 vs otros marcos x relevancia alta (score>=6), solo codificados",2x2 (chi2 con corrección de Yates),is_F2 x alta,185,1,0.0,1.0,0.013,,,0.0,17.51,,0.8624058894506228,0.942,"[[54, 18], [86, 27]]",1.0,no,no
+"T4b F3 vs otros marcos x relevancia alta (score>=6), solo codificados",2x2 (chi2 con corrección de Yates),is_F3 x alta,185,1,0.276,0.5995,0.054,,,0.0,10.22,,0.5398139519693923,1.333,"[[110, 33], [30, 12]]",1.0,no,no
+"T4b F4 vs otros marcos x relevancia alta (score>=6), solo codificados",2x2 (chi2 con corrección de Yates),is_F4 x alta,185,1,0.0,1.0,0.014,,,0.0,5.35,,1.0,0.904,"[[123, 40], [17, 5]]",1.0,no,no
+T5 marco x género declarado (M/F),omnibus RxC (chi2 de Pearson; Yates no aplica si gl>1),marco x gen2,582,4,18.592,0.0009452,0.179,0.158,"[0.122, 0.266]",20.0,3.48,Excluye género no declarado,,,,,sí,
+T5b F1 vs resto x género (M/F),2x2 (chi2 con corrección de Yates),is_F1 x gen2,582,1,0.493,0.4826,0.044,,,50.0,3.48,,0.47603963027582896,2.331,"[[251, 323], [2, 6]]",1.0,no,no
+T5b F2 vs resto x género (M/F),2x2 (chi2 con corrección de Yates),is_F2 x gen2,582,1,11.241,0.0008,0.143,,,0.0,48.25,,0.0006186064964264952,2.182,"[[221, 250], [32, 79]]",0.014400412608238978,sí,sí
+T5b F3 vs resto x género (M/F),2x2 (chi2 con corrección de Yates),is_F3 x gen2,582,1,2.364,0.1242,0.07,,,0.0,18.26,,0.10627863253399814,1.785,"[[240, 300], [13, 29]]",1.0,no,no
+T5b F4 vs resto x género (M/F),2x2 (chi2 con corrección de Yates),is_F4 x gen2,582,1,0.169,0.6814,0.026,,,0.0,9.56,,0.6619664999222898,0.761,"[[242, 318], [11, 11]]",1.0,no,no
+T6 hilo de F2 x tipo de espacio,omnibus RxC (chi2 de Pearson; Yates no aplica si gl>1),hilo x espacio4,113,12,113.498,1.214e-18,0.579,0.554,"[0.520, 0.666]",55.0,1.59,Solo comentarios F2 codificados,,,,,sí,
+T7 marco x postura (defiende/contra/matiza) entre comentarios codificados,omnibus RxC (chi2 de Pearson; Yates no aplica si gl>1),marco x postura,185,6,21.244,0.001658,0.24,0.204,"[0.170, 0.385]",58.3,0.26,,,,,,sí,
+T8 SENSIBILIDAD marco x espacio (1 comentario por autor y marco),omnibus RxC (chi2 de Pearson; Yates no aplica si gl>1),marco x espacio4,158,9,50.302,9.451e-08,0.326,0.298,"[0.275, 0.403]",50.0,0.76,Reduce pseudorreplicación por autor,,,,,sí,

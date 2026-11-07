@@ -1,0 +1,27 @@
+{
+  "levels": [
+    {
+      "id": "users",
+      "label": "Road users",
+      "categories": [
+        {
+          "id": "daily_cyclist",
+          "label": "Daily cyclist",
+          "description": "Says they cycle daily.",
+          "contact_candidate": true
+        }
+      ]
+    },
+    {
+      "id": "authority",
+      "label": "Authorities",
+      "categories": [
+        {
+          "id": "city_government",
+          "label": "City government",
+          "description": "Municipal officials and accounts."
+        }
+      ]
+    }
+  ]
+}

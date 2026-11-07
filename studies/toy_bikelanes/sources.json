@@ -1,0 +1,45 @@
+{
+  "source_types": [
+    {
+      "id": "official",
+      "label": "City official page",
+      "stats_group": "official"
+    },
+    {
+      "id": "forum",
+      "label": "Resident forum",
+      "stats_group": "public"
+    },
+    {
+      "id": "unclassified",
+      "label": "Unclassified",
+      "stats_group": "other"
+    }
+  ],
+  "registry": [
+    {
+      "key": "citybikes",
+      "kind": "page",
+      "type": "official",
+      "name": "City Bikes Office",
+      "type_verified": true
+    },
+    {
+      "key": "residentsforum",
+      "kind": "group",
+      "type": "forum",
+      "name": "Residents Forum"
+    },
+    {
+      "key": "neverseen",
+      "kind": "page",
+      "type": "forum"
+    }
+  ],
+  "institutional_authors": [
+    {
+      "name": "City Hall",
+      "actor_category": "city_government"
+    }
+  ]
+}

@@ -1,0 +1,283 @@
+{
+  "source_types": [
+    {
+      "id": "concessionaire",
+      "label": "Concessionaire official page",
+      "stats_group": "concessionaire"
+    },
+    {
+      "id": "municipal",
+      "label": "Municipal office or page",
+      "stats_group": "municipal_political"
+    },
+    {
+      "id": "politician",
+      "label": "Local politician or office-holder",
+      "stats_group": "municipal_political"
+    },
+    {
+      "id": "civic_group",
+      "label": "Civic or community group/page",
+      "stats_group": "group"
+    },
+    {
+      "id": "local_media",
+      "label": "Local media",
+      "stats_group": "group"
+    },
+    {
+      "id": "citizen_profile",
+      "label": "Citizen profile",
+      "stats_group": "citizen_profile"
+    },
+    {
+      "id": "unclassified",
+      "label": "Unclassified source",
+      "stats_group": "other"
+    }
+  ],
+  "registry": [
+    {
+      "key": "244913175530233",
+      "kind": "group",
+      "url": "https://www.facebook.com/groups/244913175530233/",
+      "name": "",
+      "type": "civic_group",
+      "type_verified": false
+    },
+    {
+      "key": "700848426998968",
+      "kind": "group",
+      "url": "https://www.facebook.com/groups/700848426998968/",
+      "name": "SOS Serra D'Arga e Alto Minho",
+      "type": "civic_group",
+      "type_verified": false
+    },
+    {
+      "key": "535527626983000",
+      "kind": "group",
+      "url": "https://www.facebook.com/groups/535527626983000/",
+      "name": "",
+      "type": "civic_group",
+      "type_verified": false
+    },
+    {
+      "key": "254801216109855",
+      "kind": "group",
+      "url": "https://www.facebook.com/groups/254801216109855/",
+      "name": "",
+      "type": "civic_group",
+      "type_verified": false
+    },
+    {
+      "key": "7479391655408844",
+      "kind": "group",
+      "url": "https://www.facebook.com/groups/7479391655408844/",
+      "name": "",
+      "type": "civic_group",
+      "type_verified": false
+    },
+    {
+      "key": "1010586782296426",
+      "kind": "group",
+      "url": "https://www.facebook.com/groups/1010586782296426/",
+      "name": "Praia D'Amorosa",
+      "type": "civic_group",
+      "type_verified": false
+    },
+    {
+      "key": "empresaaguasaltominhonao",
+      "kind": "page",
+      "url": "https://www.facebook.com/empresaaguasaltominhonao",
+      "name": "",
+      "type": "civic_group",
+      "type_verified": false
+    },
+    {
+      "key": "100063932253062",
+      "kind": "profile",
+      "url": "https://www.facebook.com/profile.php?id=100063932253062",
+      "name": "",
+      "type": "unclassified",
+      "type_verified": false
+    },
+    {
+      "key": "vianatv.pt",
+      "kind": "page",
+      "url": "https://www.facebook.com/vianatv.pt",
+      "name": "",
+      "type": "local_media",
+      "type_verified": false
+    },
+    {
+      "key": "olharvianadocastelo",
+      "kind": "page",
+      "url": "https://www.facebook.com/olharvianadocastelo",
+      "name": "",
+      "type": "local_media",
+      "type_verified": false
+    },
+    {
+      "key": "gabinete.deimprensa",
+      "kind": "page",
+      "url": "https://www.facebook.com/gabinete.deimprensa",
+      "name": "",
+      "type": "municipal",
+      "type_verified": false
+    },
+    {
+      "key": "adp.aguasdoaltominho",
+      "kind": "page",
+      "url": "https://www.facebook.com/adp.aguasdoaltominho",
+      "name": "",
+      "type": "concessionaire",
+      "type_verified": false
+    },
+    {
+      "key": "canalviana.vc",
+      "kind": "page",
+      "url": "https://www.facebook.com/canalviana.vc",
+      "name": "",
+      "type": "local_media",
+      "type_verified": false
+    },
+    {
+      "key": "ambientevianacastelo",
+      "kind": "page",
+      "url": "https://www.facebook.com/ambientevianacastelo",
+      "name": "",
+      "type": "unclassified",
+      "type_verified": false
+    },
+    {
+      "key": "AntenaMinho",
+      "kind": "page",
+      "url": "https://www.facebook.com/AntenaMinho",
+      "name": "",
+      "type": "local_media",
+      "type_verified": false
+    },
+    {
+      "key": "MeteoTrasOsMontes",
+      "kind": "page",
+      "url": "https://www.facebook.com/MeteoTrasOsMontes",
+      "name": "",
+      "type": "unclassified",
+      "type_verified": false
+    },
+    {
+      "key": "sstmvc",
+      "kind": "page",
+      "url": "https://www.facebook.com/sstmvc",
+      "name": "",
+      "type": "unclassified",
+      "type_verified": false
+    },
+    {
+      "key": "sambiental.saneamento",
+      "kind": "page",
+      "url": "https://www.facebook.com/sambiental.saneamento",
+      "name": "",
+      "type": "unclassified",
+      "type_verified": false
+    },
+    {
+      "key": "vianaaominuto",
+      "kind": "page",
+      "url": "https://www.facebook.com/vianaaominuto",
+      "name": "",
+      "type": "local_media",
+      "type_verified": false
+    },
+    {
+      "key": "RadioValedoMinho",
+      "kind": "page",
+      "url": "https://www.facebook.com/RadioValedoMinho",
+      "name": "",
+      "type": "local_media",
+      "type_verified": false
+    },
+    {
+      "key": "noticiasdecaminha",
+      "kind": "page",
+      "url": "https://www.facebook.com/noticiasdecaminha",
+      "name": "",
+      "type": "local_media",
+      "type_verified": false
+    },
+    {
+      "key": "100057545375239",
+      "kind": "profile",
+      "url": "https://www.facebook.com/profile.php?id=100057545375239",
+      "name": "",
+      "type": "unclassified",
+      "type_verified": false
+    },
+    {
+      "key": "coremapatrimonio",
+      "kind": "page",
+      "url": "https://www.facebook.com/coremapatrimonio",
+      "name": "",
+      "type": "unclassified",
+      "type_verified": false
+    },
+    {
+      "key": "associacaorioneiva",
+      "kind": "page",
+      "url": "https://www.facebook.com/associacaorioneiva",
+      "name": "",
+      "type": "civic_group",
+      "type_verified": false
+    },
+    {
+      "key": "SOSSerraDarga",
+      "kind": "page",
+      "url": "https://www.facebook.com/SOSSerraDarga",
+      "name": "",
+      "type": "civic_group",
+      "type_verified": false
+    },
+    {
+      "key": "movimentososserradarga",
+      "kind": "page",
+      "url": "https://www.facebook.com/movimentososserradarga",
+      "name": "",
+      "type": "civic_group",
+      "type_verified": false
+    },
+    {
+      "key": "ZEROasts",
+      "kind": "page",
+      "url": "https://www.facebook.com/ZEROasts",
+      "name": "",
+      "type": "civic_group",
+      "type_verified": false
+    },
+    {
+      "key": "radiogeicefm",
+      "kind": "page",
+      "url": "https://www.facebook.com/radiogeicefm",
+      "name": "",
+      "type": "local_media",
+      "type_verified": false
+    },
+    {
+      "key": "100068184615739",
+      "kind": "profile",
+      "url": "https://www.facebook.com/profile.php?id=100068184615739",
+      "name": "",
+      "type": "unclassified",
+      "type_verified": false
+    }
+  ],
+  "institutional_authors": [
+    {
+      "name": "Águas do Alto Minho",
+      "actor_category": "utility_concessionaire"
+    },
+    {
+      "name": "Câmara Municipal de Viana do Castelo",
+      "actor_category": "municipality_and_services"
+    }
+  ]
+}

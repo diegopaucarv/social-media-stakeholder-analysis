@@ -1,0 +1,69 @@
+== T1_marco_x_espacio
+espacio4  AdAM  Grupo  Municipal/político  Perfil ciudadano
+marco                                                      
+F1           8      0                   0                 0
+F2          37     12                  14                50
+F3          22      5                  15                 0
+F4          20      0                   1                 1
+SIN        268     11                  56                65
+
+== T2_marco_x_periodo
+periodo  2026  pre-2026
+marco                  
+F1          0         8
+F2         55        58
+F3         16        26
+F4          1        21
+SIN        86       314
+
+== T3
+es_respuesta    0    1
+marco                 
+F1              8    0
+F2             83   30
+F3             32   10
+F4             16    6
+SIN           296  104
+
+== T4
+alta    0   1
+marco        
+F1      7   1
+F2     86  27
+F3     30  12
+F4     17   5
+
+== T5
+gen2     F    M
+marco          
+F1       2    6
+F2      32   79
+F3      13   29
+F4      11   11
+SIN    195  204
+
+== T6
+espacio4  AdAM  Grupo  Municipal/político  Perfil ciudadano
+hilo                                                       
+F2_H1        2      3                   0                28
+F2_H2       12      1                   5                 6
+F2_H3        3      0                   0                12
+F2_H4        0      7                   9                 3
+F2_H5       20      1                   0                 1
+
+== T7
+postura  contra  defiende  matiza
+marco                            
+F1            1         6       1
+F2            8       104       1
+F3            9        29       4
+F4            0        22       0
+
+== T8
+espacio4  AdAM  Grupo  Municipal/político  Perfil ciudadano
+marco                                                      
+F1           8      0                   0                 0
+F2          33     10                  13                40
+F3          19      5                  11                 0
+F4          17      0                   1                 1
+
