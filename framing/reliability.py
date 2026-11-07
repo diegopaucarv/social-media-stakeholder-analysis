@@ -13,7 +13,15 @@ from .users import load_coded
 from .utils import write_json
 
 
-def cohen_kappa(a, b) -> float:
+def cohen_kappa(a, b) -> float | None:
+    """Cohen's kappa between two labellings.
+
+    Returns ``None`` when the coefficient is undefined: either there are no
+    paired observations, or expected agreement is 1 because a marginal is
+    degenerate (e.g. the same label everywhere, as when a study does not
+    collect a field). An undefined coefficient must not be read as perfect
+    agreement.
+    """
     a, b = pd.Series(list(a)).astype(str), pd.Series(list(b)).astype(str)
     labels = sorted(set(a) | set(b))
     t = (
@@ -23,10 +31,15 @@ def cohen_kappa(a, b) -> float:
     )
     n = t.sum()
     if n == 0:
-        return float("nan")
+        return None
     po = np.trace(t) / n
     pe = (t.sum(0) * t.sum(1)).sum() / n**2
-    return float((po - pe) / (1 - pe)) if pe < 1 else 1.0
+    return float((po - pe) / (1 - pe)) if pe < 1 else None
+
+
+def _rounded(value):
+    """Round a coefficient for JSON, preserving ``None`` for undefined values."""
+    return None if value is None else round(value, 4)
 
 
 def compare_codings(cfg: Config, a: pd.DataFrame, b: pd.DataFrame) -> dict:
@@ -41,11 +54,11 @@ def compare_codings(cfg: Config, a: pd.DataFrame, b: pd.DataFrame) -> dict:
     sel_a, sel_b = m["frame_id_a"] != none, m["frame_id_b"] != none
     rep["frame_all_categories"] = {
         "agreement": round(float((m["frame_id_a"] == m["frame_id_b"]).mean()), 4),
-        "kappa": round(cohen_kappa(m["frame_id_a"], m["frame_id_b"]), 4),
+        "kappa": _rounded(cohen_kappa(m["frame_id_a"], m["frame_id_b"])),
     }
     rep["coded_vs_not"] = {
         "agreement": round(float((sel_a == sel_b).mean()), 4),
-        "kappa": round(cohen_kappa(sel_a, sel_b), 4),
+        "kappa": _rounded(cohen_kappa(sel_a, sel_b)),
         "only_a": int((sel_a & ~sel_b).sum()),
         "only_b": int((~sel_a & sel_b).sum()),
     }
@@ -70,8 +83,8 @@ def compare_codings(cfg: Config, a: pd.DataFrame, b: pd.DataFrame) -> dict:
             )
             if len(same)
             else None,
-            "kappa": round(
-                cohen_kappa(same[f"{fld}_a"].fillna(""), same[f"{fld}_b"].fillna("")), 4
+            "kappa": _rounded(
+                cohen_kappa(same[f"{fld}_a"].fillna(""), same[f"{fld}_b"].fillna(""))
             )
             if len(same)
             else None,
@@ -83,7 +96,7 @@ def compare_codings(cfg: Config, a: pd.DataFrame, b: pd.DataFrame) -> dict:
             "n_a": int(x.sum()),
             "n_b": int(y.sum()),
             "both": int((x & y).sum()),
-            "kappa": round(cohen_kappa(x, y), 4),
+            "kappa": _rounded(cohen_kappa(x, y)),
             "jaccard": round(float((x & y).sum() / max(1, (x | y).sum())), 4),
         }
     rep["per_frame"] = per

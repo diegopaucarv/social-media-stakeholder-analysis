@@ -1,8 +1,9 @@
 """Minimal JSON Schema validator (subset) used when the `jsonschema` package is not installed.
 
-Supported keywords: $ref (local), type, enum, const, required, properties, additionalProperties (bool),
-items, minItems, maxItems, minLength, pattern, minimum, maximum.
+Supported keywords: $ref (local), type, enum, const, required, properties, additionalProperties (bool or schema),
+items, minItems, maxItems, minProperties, minLength, pattern, minimum, maximum.
 """
+
 from __future__ import annotations
 
 import re
@@ -40,11 +41,18 @@ def validate(instance, schema, root=None, path="$") -> list[str]:
             if key not in instance:
                 errors.append(f"{path}: missing required property '{key}'")
         props = schema.get("properties", {})
+        if "minProperties" in schema and len(instance) < schema["minProperties"]:
+            errors.append(
+                f"{path}: needs at least {schema['minProperties']} properties"
+            )
+        additional = schema.get("additionalProperties")
         for key, val in instance.items():
             if key in props:
                 errors += validate(val, props[key], root, f"{path}.{key}")
-            elif schema.get("additionalProperties") is False:
+            elif additional is False:
                 errors.append(f"{path}: unexpected property '{key}'")
+            elif isinstance(additional, dict):
+                errors += validate(val, additional, root, f"{path}.{key}")
     if isinstance(instance, list):
         if "minItems" in schema and len(instance) < schema["minItems"]:
             errors.append(f"{path}: needs at least {schema['minItems']} items")

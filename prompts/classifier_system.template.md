@@ -43,12 +43,12 @@ For each comment in the batch decide whether it supports one of the FRAMES defin
 
 <reasoning_protocol>
 For every comment reason internally in this order, then emit only the final JSON:
-(a) What does the author literally claim? (b) Towards whom or what is the criticism or belief directed? (c) Is it only support, insult or discontent without a reason (see the support and weak-adjacent rules)? (d) Which frame and thread does it match, or does it need an EMERGENT thread? (e) What is the stance? (f) Which literal excerpt (at most 25 words) proves it? (g) Self-check: does the excerpt appear verbatim in the text? does the thread belong to the frame? was irony misread? is an actor role self-declared?
+(a) What does the author literally claim? (b) Towards whom or what is the criticism or belief directed? (c) Is it only support, insult or discontent without a reason (see the support and weak-adjacent rules)? (d) Which frame and thread does it match, or does it need an {{EMERGENT}} thread? (e) What is the stance? (f) Which literal excerpt (at most 25 words) proves it? (g) Self-check: does the excerpt appear verbatim in the text? does the thread belong to the frame? was irony misread? is an actor role self-declared?
 Never include this reasoning in the output.
 </reasoning_protocol>
 
 <emergent_threads>
-If a comment clearly supports a frame but no thread describes its argument, use thread_id "EMERGENT" and write a short proposal (at most 10 words, in the analysis language) in emergent_thread_proposal. Do not invent a thread for comments that fit an existing one.
+If a comment clearly supports a frame but no thread describes its argument, use thread_id "{{EMERGENT}}" and write a short proposal (at most 10 words, in the analysis language) in emergent_thread_proposal. Do not invent a thread for comments that fit an existing one.
 </emergent_threads>
 
 <output_schema>

@@ -12,6 +12,7 @@ import re
 from pathlib import Path
 from typing import TYPE_CHECKING
 
+from . import fields, post_fields
 from . import files as F
 from .prompt_builder import (
     PROMPT_DIR,
@@ -24,33 +25,16 @@ from .prompt_builder import (
 if TYPE_CHECKING:  # imported for typing only
     from .config import Config
 
-RESPONSE_CSV_HEADER = [
-    "comment_id",
-    "is_institutional",
-    "frame_id",
-    "secondary_frame_id",
-    "thread_id",
-    "stance",
-    "evidence_level",
-    "confidence",
-    "rationale",
-    "literal_excerpt",
-    "emergent_thread_proposal",
-    "actor_category",
-    "actor_self_declared",
-    "actor_evidence",
-    "needs_human_review",
-]
+#: The published chatbot contract: every field, in CSV order. Kept as a module
+#: constant because the wizard and the tests print it; a study that trims its field
+#: set gets its own header from :func:`response_csv_header`.
+RESPONSE_CSV_HEADER = [spec.name for spec in fields.csv_fields(fields.FIELD_NAMES)]
 
+#: The default post-answer CSV contract (see ``framing.post_fields``).
 POST_RESPONSE_CSV_HEADER = [
-    "post_key",
-    "topic",
-    "primary_frame_id",
-    "source_type_guess",
+    spec.name for spec in post_fields.csv_fields(post_fields.POST_FIELD_NAMES)
 ]
 
-_HEADER_LINE = ",".join(RESPONSE_CSV_HEADER)
-_POST_HEADER_LINE = ",".join(POST_RESPONSE_CSV_HEADER)
 
 _MANIFEST_PLACEHOLDER = "<manifest.json>"
 _ANSWER_FILE = "ai_output.csv"
@@ -99,6 +83,52 @@ def _post_label(post_context) -> str:
         if label:
             return label
     return "unknown post"
+
+
+def response_csv_header(cfg: Config) -> list[str]:
+    """The CSV columns this study asks for, in the published CSV order."""
+    return [spec.name for spec in fields.csv_fields(cfg.output_fields)]
+
+
+def post_response_csv_header(cfg: Config) -> list[str]:
+    """The post-answer CSV columns this study asks for, in the published CSV order."""
+    return [spec.name for spec in post_fields.csv_fields(cfg.output_post_fields)]
+
+
+def _permitted_value_lines(cfg: Config) -> list[str]:
+    """The "permitted values" block, limited to the fields the study asks for."""
+    values = [
+        ("is_institutional", ["0", "1"]),
+        ("stance", stance_keys(cfg)),
+        ("evidence_level", evidence_keys(cfg)),
+        ("confidence", ["1", "2", "3"]),
+        ("needs_human_review", ["0", "1"]),
+        ("actor_self_declared", ["0", "1"]),
+    ]
+    return [
+        _value_set_line(name, vals)
+        for name, vals in values
+        if name in cfg.output_field_set
+    ]
+
+
+def _no_frame_notes(cfg: Config) -> list[str]:
+    """The two prose sentences under the permitted values, in the same order as before."""
+    out = []
+    blanks = [
+        name for name in fields.CSV_NO_FRAME_BLANKS if name in cfg.output_field_set
+    ]
+    if blanks:
+        out.append(
+            f"For the no-frame id `{cfg.no_frame_id}` leave {fields.prose(blanks)} empty."
+        )
+    if "is_institutional" in cfg.output_field_set:
+        out.append(
+            "Set is_institutional to 1 for comments written by an official or "
+            "institutional body (those listed in <institutional_authors>); such "
+            f"comments always use the no-frame id `{cfg.no_frame_id}`."
+        )
+    return out
 
 
 def _read_batches(work_dir) -> list[dict]:
@@ -178,26 +208,13 @@ def build_classification_markdown(
         "comment, in the order the comments appear in the batches. Quote every field that contains",
         "a comma, a double quote or a newline, and double any quote inside a quoted string.",
         "",
-        _fenced(_HEADER_LINE, "csv"),
+        _fenced(",".join(response_csv_header(cfg)), "csv"),
         "",
         "### Permitted values",
         "",
-        _value_set_line("is_institutional", ["0", "1"]),
-        _value_set_line("stance", stance_keys(cfg)),
-        _value_set_line("evidence_level", evidence_keys(cfg)),
-        _value_set_line("confidence", ["1", "2", "3"]),
-        _value_set_line("needs_human_review", ["0", "1"]),
-        _value_set_line("actor_self_declared", ["0", "1"]),
+        *_permitted_value_lines(cfg),
         "",
-        (
-            f"For the no-frame id `{cfg.no_frame_id}` leave stance, evidence_level, "
-            "literal_excerpt and secondary_frame_id empty."
-        ),
-        (
-            "Set is_institutional to 1 for comments written by an official or "
-            "institutional body (those listed in <institutional_authors>); such "
-            f"comments always use the no-frame id `{cfg.no_frame_id}`."
-        ),
+        *_no_frame_notes(cfg),
         "",
     ]
 
@@ -220,13 +237,16 @@ def build_classification_markdown(
                 "per post, using this header:"
             ),
             "",
-            _fenced(_POST_HEADER_LINE, "csv"),
-            "",
-            "### Permitted frame ids",
-            "",
-            _value_set_line("primary_frame_id", cfg.all_frame_ids),
+            _fenced(",".join(post_response_csv_header(cfg)), "csv"),
             "",
         ]
+        if "primary_frame_id" in cfg.output_post_field_set:
+            parts += [
+                "### Permitted frame ids",
+                "",
+                _value_set_line("primary_frame_id", cfg.all_frame_ids),
+                "",
+            ]
         for i, payload in enumerate(post_payloads, 1):
             parts += [
                 f"### Post batch {i}/{n_post_batches}",
@@ -292,12 +312,14 @@ def write_classification_bundle(
     out.write_text(markdown, encoding="utf-8")
 
     template = out.with_suffix(".template.csv")
-    template.write_text(_HEADER_LINE + "\n", encoding="utf-8")
+    template.write_text(",".join(response_csv_header(cfg)) + "\n", encoding="utf-8")
 
     post_template = None
     if info["post_batches"]:
         post_template = out.with_name(out.stem + ".posts.template.csv")
-        post_template.write_text(_POST_HEADER_LINE + "\n", encoding="utf-8")
+        post_template.write_text(
+            ",".join(post_response_csv_header(cfg)) + "\n", encoding="utf-8"
+        )
 
     info["post_template_csv"] = str(post_template) if post_template else None
     return {

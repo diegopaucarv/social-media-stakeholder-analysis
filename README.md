@@ -1,6 +1,6 @@
 # Framing pipeline
 
-Extract the arguments people make in social-media comments: which **frame** each
+Extracts the arguments people make in social-media comments: which **frame** each
 comment sustains, what **stance** it takes, how confident the coding is, and who is
 talking. Point it at two CSV files from your scraper and it produces coded tables,
 statistics, and an interactive network you open in a browser.
@@ -122,7 +122,9 @@ This is what step 2 does unless you explicitly choose the API.
    `work/<id>/ai_posts.csv`.
 4. Choose step 3 (`merge`) in the wizard, or run the `merge` command below.
 
-The answer must be a CSV whose first line is exactly:
+The answer must be a CSV whose first line is exactly the header the bundle prints
+under "Required output format" (it is generated from `study.output_fields`; with
+the default field set it is):
 
 ```csv
 comment_id,is_institutional,frame_id,secondary_frame_id,thread_id,stance,evidence_level,confidence,rationale,literal_excerpt,emergent_thread_proposal,actor_category,actor_self_declared,actor_evidence,needs_human_review
@@ -460,7 +462,7 @@ written by the stage that owns them.
 | `run.json`                          | `prepare`, `merge` | Config hash and run metadata                                      | Later stages (staleness)    |
 | `classification.md`                 | `export-md`        | The whole task in one file, to paste into a chatbot               | You / your chatbot          |
 | `classification.template.csv`       | `export-md`        | Empty CSV with the exact expected header                          | You                         |
-| `classification.posts.template.csv` | `export-md`        | Same, for the post section (when posts exist)                     | You                         |
+| `classification.posts.template.csv` | `export-md`        | Same, when posts exist; header follows the selected post fields   | You                         |
 | `ai_output.csv`                     | You                | The chatbot's comment answer                                      | `merge`                     |
 | `ai_posts.csv`                      | You                | The chatbot's post answer (optional)                              | `merge`                     |
 | `responses/api_answers.json`        | `classify-api`     | The API's comment answers                                         | `merge`                     |
@@ -523,7 +525,7 @@ columns, so a bad header fails loudly instead of drawing a partial graph.
 ## Configuration knobs
 
 Behaviour that used to be fixed is driven by keys in the `study` / `actors` /
-`locations` modules. Anything omitted falls back to the default shown.
+`locations` / `codebook` modules. Anything omitted falls back to the default shown.
 
 | Key                                          | Default            | What it controls                                                     |
 | -------------------------------------------- | ------------------ | -------------------------------------------------------------------- |
@@ -539,10 +541,125 @@ Behaviour that used to be fixed is driven by keys in the `study` / `actors` /
 | `study.gap_checks.sparse_frame_comments`     | `5`                | Frames below this are flagged as sparse.                             |
 | `study.gap_checks.severe_frame_comments`     | `10`               | Frames below this raise a `high` (not `medium`) gap.                 |
 | `study.input_schema`                         | Apify Facebook map | Per-section column override for other scrapers.                      |
+| `study.classification.emergent_thread_id`    | `EMERGENT`         | Thread id the model uses to propose a brand-new thread.              |
 
 Allowed `study.stats.tests[].kind`: `omnibus`, `one_vs_rest`, `any_frame`,
 `thread_within_frame`. Allowed `pop`: `citizen`, `coded`, `citizen_gender`,
 `coded_dedup`. The full schema is `schemas/modules.schema.json`.
+
+### Answer fields
+
+The fields the classifier is asked to fill are declared once, in
+`framing/fields.py`, and a study can trim, reorder or re-word them without touching
+code:
+
+```json
+"output_fields": ["comment_id", "frame_id", "thread_id", "stance", "confidence"],
+"output_field_help": {"stance": "one of {stances}, or \"\" for no-frame"}
+```
+
+Omit `output_fields` to keep the full default vocabulary. `comment_id` and
+`frame_id` are structural (the join key and the analysis pivot) and cannot be
+dropped; every other field is optional. A dropped field is not asked for, but the
+record keeps a safe default, the analysis tables keep the (empty) column, and the
+gap report stops running the checks that depend on it instead of inventing values.
+Dropping `confidence` counts every record as `2` ("probable"), so the confidence
+filter keeps working.
+
+| field                      | tier       | in CSV         | default when absent              |
+| -------------------------- | ---------- | -------------- | -------------------------------- |
+| `comment_id`               | structural | yes            | `""`                             |
+| `frame_id`                 | structural | yes            | `""`                             |
+| `is_institutional`         | core       | yes            | `false`                          |
+| `thread_id`                | core       | yes            | `""`                             |
+| `stance`                   | core       | yes            | `""`                             |
+| `evidence_level`           | core       | yes            | `""`                             |
+| `confidence`               | core       | yes            | `2` (when not asked for)         |
+| `needs_human_review`       | core       | yes            | `false`                          |
+| `secondary_frame_id`       | optional   | yes            | `""`                             |
+| `emergent_thread_proposal` | optional   | yes            | `""` (needs `thread_id`)         |
+| `literal_excerpt`          | optional   | yes            | `""`                             |
+| `rationale`                | optional   | yes            | `""`                             |
+| `review_reason`            | optional   | no (JSON only) | `""`                             |
+| `actor_category`           | optional   | yes            | `""`                             |
+| `actor_self_declared`      | optional   | yes            | `false` (needs `actor_category`) |
+| `actor_evidence`           | optional   | yes            | `""` (needs `actor_category`)    |
+
+Three generic coding rules are dropped with the field they exist for
+(`literal_excerpt`, `is_institutional`, the actor trio). Rules that only _mention_
+a field as part of the wider method stay, so trim with care: the JSON schema is
+the authority on which fields are required.
+
+#### Stance and evidence vocabulary
+
+The values of `stance` and `evidence_level` are not fixed either: they are the keys
+of two codebook sections, in the order they are declared there.
+
+```json
+"stance_definitions": {
+  "a_favor": "Sustains the argument of the thread.",
+  "en_contra": "Rejects the argument of the thread.",
+  "matiza": "Accepts it only in part."
+},
+"evidence_definitions": {
+  "core": "States the thread's own claim.",
+  "adjacent": "Related evidence, weaker than core."
+}
+```
+
+That single definition drives the prompt (`{{STANCES}}` / `{{EVIDENCE}}` blocks),
+the `enum` of the JSON response schema, the "permitted values" block of the chatbot
+CSV instructions, the record checks and the gap report. Two conventions matter:
+
+- **Order is meaning.** The prompt and the schema list the ids in declaration order,
+  and the **last** evidence level is the _weakest_ one (the gap report warns when a
+  frame rests mostly on it). Declare the levels strongest first.
+- **A value outside the vocabulary is never silently kept.** It fails the record
+  check, lands in the review queue and is blanked, so a mis-typed id is visible
+  instead of being counted as a real category.
+
+`EMERGENT` is a different kind of value: it is a _protocol sentinel_ — the thread id
+that means "no existing thread fits, the proposal is in `emergent_thread_proposal`".
+Rename it with `study.classification.emergent_thread_id` when the corpus language or
+the convention needs another token; every consumer (schema enum, prompt, merge
+labels, statistics exclusion, network export) follows the configured value.
+
+Both layers are plain files you can edit: `schemas/modules.schema.json` says what a
+study is allowed to declare (widen it when you need a new key), and
+`prompts/*.template.md` holds the prose of the prompts — the `{{NAME}}` blocks are
+filled from the study config, so keep their names and change the words around them.
+The generic reasoning rules adapt to the declared order on their own: the calibration
+rule says "choose the cautious stance" / "choose the weakest level" using your ids.
+
+#### Post answer fields
+
+The post classifier uses the same mechanism (`framing/post_fields.py`), with
+`study.output_post_fields` (an ordered list) and `study.output_post_field_help`
+(a field-to-wording map; the help text may use `{frames}`, `{frames_list}`
+and `{source_types}`). Omit both to keep the full default vocabulary, in this order:
+`post_key`, `topic`, `primary_frame_id`, `related_frame_ids`, `source_type_guess`,
+`rationale`, `confidence`. Only `post_key` is structural (the join key) and cannot be
+dropped; every other field may be. The JSON prompt asks for every selected field; the
+chatbot CSV prompt carries only the fields asked for in CSV, four by default. A
+dropped field is not asked for, and every consumer tolerates its absence:
+
+| field               | in JSON | in CSV | default when absent | fallback                                                               |
+| ------------------- | ------- | ------ | ------------------- | ---------------------------------------------------------------------- |
+| `post_key`          | yes     | yes    | `""`                | - (join key; cannot be dropped)                                        |
+| `topic`             | yes     | yes    | `""`                | viewer labels the topic node from the post text                        |
+| `primary_frame_id`  | yes     | yes    | `""`                | `post_frame_id` stays empty (dominant frame still comes from comments) |
+| `related_frame_ids` | yes     | no     | `()`                | never ingested                                                         |
+| `source_type_guess` | yes     | yes    | `""`                | unregistered posts stay `unclassified` / group `other`                 |
+| `rationale`         | yes     | no     | `""`                | never ingested                                                         |
+| `confidence`        | yes     | no     | `0`                 | never ingested                                                         |
+
+```json
+"output_post_fields": ["post_key", "topic", "primary_frame_id", "source_type_guess"],
+"output_post_field_help": {"topic": "short label, at most 8 words"}
+```
+
+With the defaults untouched the rendered post prompt, the post JSON schema and the
+post CSV header are byte-identical, so existing studies need no re-classification.
 
 ---
 

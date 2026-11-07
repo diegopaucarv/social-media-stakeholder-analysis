@@ -10,7 +10,6 @@ import pandas as pd
 
 from . import files as F
 from .config import Config
-from .schemas import EMERGENT, EVIDENCE
 from .users import load_coded
 from .utils import read_json, write_csv, write_json
 
@@ -18,9 +17,20 @@ from .utils import read_json, write_csv, write_json
 # no Holm correction and no new output file. Thresholds stay module constants so
 # study.json needs no new key (its gap_checks schema is strict); g.get(...) lets
 # a study override them later without breaking existing configurations.
+# The "weakest" level is not a constant: it is the *last* level the study codebook
+# declares (see ``Config.evidence_ids``), so a custom vocabulary ranks itself.
 EMPTY_EVIDENCE_SHARE_WARNING = 0.6
-WEAKEST_EVIDENCE_LEVEL = EVIDENCE[-1]
 WEAKEST_EVIDENCE_SHARE_WARNING = 0.6
+
+
+def weakest_evidence_level(cfg: Config) -> str:
+    """The weakest evidence level a study declares.
+
+    The codebook lists the levels strongest first, so the last one is the weakest.
+    That is the only assumption the gap report makes about the vocabulary; a study
+    that renames or extends it needs no code change.
+    """
+    return cfg.evidence_ids[-1]
 
 
 def _account(post_key: str) -> str:
@@ -135,36 +145,38 @@ def build_gap_report(cfg: Config, work_dir, out_dir=None) -> dict:
                 f"Frame {fid} ({cfg.frame_label[fid]}) has only {n} coded comments (< {g['min_frame_comments']}).",
                 "Not analysable with chi-square; collect more material for this frame (targeted sources and searches) or merge it.",
             )
-    for tid in cfg.thread_ids:
-        n = int((coded["thread_id"] == tid).sum())
-        if n < g["min_thread_comments"]:
+    if "thread_id" in cfg.output_field_set:
+        for tid in cfg.thread_ids:
+            n = int((coded["thread_id"] == tid).sum())
+            if n < g["min_thread_comments"]:
+                add(
+                    "threads",
+                    "low",
+                    f"Thread {tid} ({cfg.thread_label[tid]}) has {n} comments (< {g['min_thread_comments']}).",
+                    "Merge, retire or look for more evidence.",
+                )
+        em = coded[coded["thread_id"] == cfg.emergent_thread_id]
+        if len(em):
             add(
                 "threads",
-                "low",
-                f"Thread {tid} ({cfg.thread_label[tid]}) has {n} comments (< {g['min_thread_comments']}).",
-                "Merge, retire or look for more evidence.",
+                "medium",
+                f"{len(em)} comments sit in {cfg.emergent_thread_id} threads.",
+                "Run another discovery round to turn proposals into threads.",
             )
-    em = coded[coded["thread_id"] == EMERGENT]
-    if len(em):
-        add(
-            "threads",
-            "medium",
-            f"{len(em)} comments sit in {EMERGENT} threads.",
-            "Run another discovery round to turn proposals into threads.",
-        )
     # 4 actors
-    declared = c[(c["actor_category"] != "") & c["actor_self_declared"]]
-    for cid, meta in cfg.actor_categories.items():
-        n = int((declared["actor_category"] == cid).sum())
-        if n == 0 and meta["coverage_check"]:
-            add(
-                "actors",
-                "medium" if meta["contact_candidate"] else "low",
-                f"No self-declared '{cid}' ({meta['label']}) in the corpus.",
-                "Search for these actors in other groups/pages; the corpus gives no way to contact them."
-                if meta["contact_candidate"]
-                else "Check whether this actor should be sought elsewhere.",
-            )
+    if {"actor_category", "actor_self_declared"} <= cfg.output_field_set:
+        declared = c[(c["actor_category"] != "") & c["actor_self_declared"]]
+        for cid, meta in cfg.actor_categories.items():
+            n = int((declared["actor_category"] == cid).sum())
+            if n == 0 and meta["coverage_check"]:
+                add(
+                    "actors",
+                    "medium" if meta["contact_candidate"] else "low",
+                    f"No self-declared '{cid}' ({meta['label']}) in the corpus.",
+                    "Search for these actors in other groups/pages; the corpus gives no way to contact them."
+                    if meta["contact_candidate"]
+                    else "Check whether this actor should be sought elsewhere.",
+                )
     # 5 expected terms
     text = cit["text"].astype(str)
     term_counts = {}
@@ -179,39 +191,41 @@ def build_gap_report(cfg: Config, work_dir, out_dir=None) -> dict:
                 "Check whether the topic is absent from the discourse or missing from the sampled sources.",
             )
     # 5b evidence level (descriptive only: summarised per frame, not tested)
-    empty_warn = float(
-        g.get("empty_evidence_share_warning", EMPTY_EVIDENCE_SHARE_WARNING)
-    )
-    weak_warn = float(
-        g.get("weakest_evidence_share_warning", WEAKEST_EVIDENCE_SHARE_WARNING)
-    )
     evidence_by_frame: dict[str, dict[str, int]] = {}
-    for fid in cfg.frame_ids:
-        sub = coded[coded["frame_id"] == fid]
-        counts = sub["evidence_level"].fillna("").astype(str).value_counts()
-        dist = {str(k): int(v) for k, v in counts.items()}
-        dist["n"] = int(len(sub))
-        evidence_by_frame[fid] = dist
-        if not dist["n"]:
-            continue
-        empty_share = dist.get("", 0) / dist["n"]
-        weak_share = dist.get(WEAKEST_EVIDENCE_LEVEL, 0) / dist["n"]
-        if empty_share >= empty_warn:
-            add(
-                "evidence",
-                "high" if empty_share >= 0.8 else "medium",
-                f"{empty_share:.0%} of the {dist['n']} coded comments in frame {fid} "
-                f"({cfg.frame_label[fid]}) carry no evidence_level.",
-                "Re-code or review these comments: a frame claim needs an explicit evidence level.",
-            )
-        elif weak_share >= weak_warn:
-            add(
-                "evidence",
-                "medium",
-                f"{weak_share:.0%} of the {dist['n']} coded comments in frame {fid} "
-                f"({cfg.frame_label[fid]}) rest on '{WEAKEST_EVIDENCE_LEVEL}' evidence.",
-                "Look for explicit evidence (figures, concrete charges) or qualify the frame's support.",
-            )
+    if "evidence_level" in cfg.output_field_set:
+        empty_warn = float(
+            g.get("empty_evidence_share_warning", EMPTY_EVIDENCE_SHARE_WARNING)
+        )
+        weak_warn = float(
+            g.get("weakest_evidence_share_warning", WEAKEST_EVIDENCE_SHARE_WARNING)
+        )
+        weakest = weakest_evidence_level(cfg)
+        for fid in cfg.frame_ids:
+            sub = coded[coded["frame_id"] == fid]
+            counts = sub["evidence_level"].fillna("").astype(str).value_counts()
+            dist = {str(k): int(v) for k, v in counts.items()}
+            dist["n"] = int(len(sub))
+            evidence_by_frame[fid] = dist
+            if not dist["n"]:
+                continue
+            empty_share = dist.get("", 0) / dist["n"]
+            weak_share = dist.get(weakest, 0) / dist["n"]
+            if empty_share >= empty_warn:
+                add(
+                    "evidence",
+                    "high" if empty_share >= 0.8 else "medium",
+                    f"{empty_share:.0%} of the {dist['n']} coded comments in frame {fid} "
+                    f"({cfg.frame_label[fid]}) carry no evidence_level.",
+                    "Re-code or review these comments: a frame claim needs an explicit evidence level.",
+                )
+            elif weak_share >= weak_warn:
+                add(
+                    "evidence",
+                    "medium",
+                    f"{weak_share:.0%} of the {dist['n']} coded comments in frame {fid} "
+                    f"({cfg.frame_label[fid]}) rest on '{weakest}' evidence.",
+                    "Look for explicit evidence (figures, concrete charges) or qualify the frame's support.",
+                )
     # 6 temporal coverage
     years = cit["timestamp"].dt.year.value_counts().sort_index()
     span = (
@@ -332,7 +346,9 @@ def build_gap_report(cfg: Config, work_dir, out_dir=None) -> dict:
         "frame_counts": {f: int((coded["frame_id"] == f).sum()) for f in cfg.frame_ids},
         "evidence_level_by_frame": evidence_by_frame,
         "thread_counts": {
-            t: int((coded["thread_id"] == t).sum()) for t in cfg.thread_ids
+            t: int((coded["thread_id"] == t).sum())
+            for t in cfg.thread_ids
+            if "thread_id" in cfg.output_field_set
         },
         "expected_term_counts": term_counts,
         "comments_per_year": {int(k): int(v) for k, v in years.items()},
@@ -372,7 +388,7 @@ def render_markdown(r: dict, cfg: Config) -> str:
     if evidence:
         levels = sorted(
             {lvl for dist in evidence.values() for lvl in dist if lvl != "n"}
-        ) or list(EVIDENCE)
+        ) or list(cfg.evidence_ids)
         lines += [
             "",
             "## Evidence level per frame (descriptive)",

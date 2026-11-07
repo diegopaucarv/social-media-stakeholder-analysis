@@ -10,7 +10,6 @@ import pandas as pd
 from . import files as F
 from .config import Config
 from .provenance import warn_if_stale
-from .schemas import STANCES
 from .utils import as_bool, write_csv
 
 
@@ -67,8 +66,7 @@ def _support_stance_keys(cfg: Config) -> set[str]:
     """
     from .network_export import stance_group
 
-    keys = list(cfg.codebook.get("stance_definitions") or {}) or list(STANCES)
-    return {k for k in keys if stance_group(k) == "support"}
+    return {k for k in cfg.stance_ids if stance_group(k) == "support"}
 
 
 def build_users(c: pd.DataFrame, cfg: Config) -> tuple[pd.DataFrame, pd.DataFrame]:

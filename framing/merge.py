@@ -14,7 +14,6 @@ from . import files as F
 from .config import Config
 from .institutional import combine
 from .provenance import warn_if_stale, write_run
-from .schemas import EMERGENT, RECORD_DEFAULTS
 from .utils import as_bool, read_json, write_csv, write_json
 
 #: Temporary column carrying the model-declared institutional flag through the merge.
@@ -210,7 +209,7 @@ def merge(
             f"coverage {report['coverage']:.1%} is below the required {require_coverage:.0%} "
             f"({report['unclassified_eligible']} of {eligible} eligible comments unclassified)"
         )
-    for col, default in RECORD_DEFAULTS.items():
+    for col, default in cfg.record_defaults.items():
         if col in c and col not in ("comment_id", "is_institutional"):
             c[col] = c[col].where(c[col].notna(), default)
     c["frame_id"] = c["frame_id"].replace("", cfg.no_frame_id)
@@ -224,8 +223,10 @@ def merge(
     ] = ""
     c["frame_label"] = c["frame_id"].map(cfg.frame_label)
     c["thread_label"] = c["thread_id"].map(cfg.thread_label).fillna("")
-    em = c["thread_id"] == EMERGENT
-    c.loc[em, "thread_label"] = "EMERGENT: " + c.loc[em, "emergent_thread_proposal"]
+    em = c["thread_id"] == cfg.emergent_thread_id
+    c.loc[em, "thread_label"] = (
+        f"{cfg.emergent_thread_id}: " + c.loc[em, "emergent_thread_proposal"]
+    )
     c["selected"] = (c["frame_id"] != cfg.no_frame_id) & (c["confidence"] >= min_conf)
 
     # ---- post-level metadata and classification

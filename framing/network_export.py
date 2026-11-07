@@ -12,9 +12,9 @@ Contract summary (one row per coded comment):
   ``03_posts_classified.csv`` when merge wrote it (else from ``posts_table.csv``);
 - ``frame_id`` / ``frame_label`` the argument frame;
 - ``thread_id`` / ``thread_label`` the sub-argument thread. Emergent threads get a
-  synthetic, stable id ``EMERGENT:<slug>`` (the model proposal lower-cased and
-  slugified) while ``thread_label`` keeps the proposal text, so two different
-  proposals no longer collapse into one node;
+  synthetic, stable id ``<emergent_thread_id>:<slug>`` (the configured sentinel, the
+  model proposal lower-cased and slugified) while ``thread_label`` keeps the proposal
+  text, so two different proposals no longer collapse into one node;
 - ``author``, ``comment_text`` and ``published_at`` describe the comment;
 - ``stance`` keeps the raw coded value while ``stance_group`` normalises it to
   ``support``, ``against`` or ``qualify`` for the pie chart;
@@ -35,7 +35,6 @@ import pandas as pd
 from . import files as F
 from .config import Config
 from .progress import progress
-from .schemas import EMERGENT
 from .users import load_coded
 from .utils import as_bool, write_csv
 
@@ -233,7 +232,7 @@ def build_network_rows(cfg: Config, work_dir) -> pd.DataFrame:
     keep = (
         (frame_all != "")
         & (frame_all != str(cfg.no_frame_id))
-        & (frame_all != EMERGENT)
+        & (frame_all != cfg.emergent_thread_id)
         & (text_all.str.strip() != "")
         & (_text_column(c, "post_topic").str.strip() != "")
     )
@@ -245,11 +244,11 @@ def build_network_rows(cfg: Config, work_dir) -> pd.DataFrame:
     thread_label = thread_id.map(lambda tid: cfg.thread_label.get(tid, tid))
     if "emergent_thread_proposal" in c.columns:
         proposal = _text_column(c, "emergent_thread_proposal").str.strip()
-        use_proposal = (thread_id == EMERGENT) & (proposal != "")
+        use_proposal = (thread_id == cfg.emergent_thread_id) & (proposal != "")
         thread_label = thread_label.mask(use_proposal, proposal)
         slug = proposal.map(_emergent_slug)
         use_slug = use_proposal & (slug != "")
-        thread_id = thread_id.mask(use_slug, "EMERGENT:" + slug)
+        thread_id = thread_id.mask(use_slug, f"{cfg.emergent_thread_id}:" + slug)
 
     pseudonym = _text_column(c, "user_pseudonym").str.strip()
     user_name = _text_column(c, "user_name").str.strip()

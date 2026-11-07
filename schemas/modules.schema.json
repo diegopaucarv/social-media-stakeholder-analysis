@@ -62,7 +62,82 @@
             "batch_size": { "type": "integer", "minimum": 1 },
             "post_batch_size": { "type": "integer", "minimum": 1 },
             "min_confidence": { "type": "integer", "minimum": 1, "maximum": 3 },
-            "parent_text_max_chars": { "type": "integer", "minimum": 0 }
+            "parent_text_max_chars": { "type": "integer", "minimum": 0 },
+            "emergent_thread_id": { "type": "string", "minLength": 1 }
+          },
+          "additionalProperties": false
+        },
+        "output_fields": {
+          "type": "array",
+          "minItems": 2,
+          "items": {
+            "enum": [
+              "comment_id",
+              "is_institutional",
+              "frame_id",
+              "secondary_frame_id",
+              "thread_id",
+              "emergent_thread_proposal",
+              "stance",
+              "evidence_level",
+              "literal_excerpt",
+              "rationale",
+              "confidence",
+              "needs_human_review",
+              "review_reason",
+              "actor_category",
+              "actor_self_declared",
+              "actor_evidence"
+            ]
+          }
+        },
+        "output_field_help": {
+          "type": "object",
+          "properties": {
+            "comment_id": { "type": "string" },
+            "is_institutional": { "type": "string" },
+            "frame_id": { "type": "string" },
+            "secondary_frame_id": { "type": "string" },
+            "thread_id": { "type": "string" },
+            "emergent_thread_proposal": { "type": "string" },
+            "stance": { "type": "string" },
+            "evidence_level": { "type": "string" },
+            "literal_excerpt": { "type": "string" },
+            "rationale": { "type": "string" },
+            "confidence": { "type": "string" },
+            "needs_human_review": { "type": "string" },
+            "review_reason": { "type": "string" },
+            "actor_category": { "type": "string" },
+            "actor_self_declared": { "type": "string" },
+            "actor_evidence": { "type": "string" }
+          },
+          "additionalProperties": false
+        },
+        "output_post_fields": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "enum": [
+              "post_key",
+              "topic",
+              "primary_frame_id",
+              "related_frame_ids",
+              "source_type_guess",
+              "rationale",
+              "confidence"
+            ]
+          }
+        },
+        "output_post_field_help": {
+          "type": "object",
+          "properties": {
+            "post_key": { "type": "string" },
+            "topic": { "type": "string" },
+            "primary_frame_id": { "type": "string" },
+            "related_frame_ids": { "type": "string" },
+            "source_type_guess": { "type": "string" },
+            "rationale": { "type": "string" },
+            "confidence": { "type": "string" }
           },
           "additionalProperties": false
         },
@@ -370,23 +445,16 @@
           }
         },
         "stance_definitions": {
+          "description": "The stance vocabulary. Keys are the ids the model may answer; the description is rendered in the prompt. Declaration order is the order of the prompt and of the JSON schema enum.",
           "type": "object",
-          "required": ["supports", "opposes", "qualifies"],
-          "properties": {
-            "supports": { "type": "string" },
-            "opposes": { "type": "string" },
-            "qualifies": { "type": "string" }
-          },
-          "additionalProperties": false
+          "minProperties": 1,
+          "additionalProperties": { "type": "string", "minLength": 1 }
         },
         "evidence_definitions": {
+          "description": "The evidence-level vocabulary, strongest first: the last declared level is the weakest, and the gap report reports on it.",
           "type": "object",
-          "required": ["core", "adjacent"],
-          "properties": {
-            "core": { "type": "string" },
-            "adjacent": { "type": "string" }
-          },
-          "additionalProperties": false
+          "minProperties": 1,
+          "additionalProperties": { "type": "string", "minLength": 1 }
         },
         "decision_rules": { "type": "array", "items": { "type": "string" } },
         "examples": {

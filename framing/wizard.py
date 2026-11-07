@@ -52,6 +52,7 @@ WORKFLOW = (
 )
 
 BUNDLE = "classification.md"
+TEMPLATE_CSV = "classification.template.csv"
 AI_ANSWER = "ai_output.csv"
 POST_ANSWER = "ai_posts.csv"
 API_ANSWERS = Path("responses") / "api_answers.json"
@@ -74,7 +75,7 @@ _OUTPUT_NAMES = {
     F.NETWORK,
     AI_ANSWER,
     POST_ANSWER,
-    "classification.template.csv",
+    TEMPLATE_CSV,
     "classification.posts.template.csv",
 }
 
@@ -387,11 +388,28 @@ def network_argv(study, work, out=None):
 # ----------------------------------------------------------------------------- chatbot help
 
 
-def explain_chatbot_branch(work, out=print):
-    """Print what to do with ``classification.md`` and where to save the answer."""
+def _response_header(work):
+    """The comment-answer CSV header this work folder asks for.
+
+    ``export-md`` writes a header-only template trimmed to the study's selected
+    fields; prefer it so the printed instructions match the file the user has.
+    Fall back to the package default when the template is missing or unusable.
+    """
     from .export_md import RESPONSE_CSV_HEADER
 
+    template = Path(work) / TEMPLATE_CSV
+    try:
+        first = template.read_text(encoding="utf-8-sig").splitlines()[0]
+    except (OSError, IndexError):
+        return list(RESPONSE_CSV_HEADER)
+    cols = [c.strip() for c in first.split(",")]
+    return cols if any(cols) else list(RESPONSE_CSV_HEADER)
+
+
+def explain_chatbot_branch(work, out=print):
+    """Print what to do with ``classification.md`` and where to save the answer."""
     work = Path(work)
+    header = _response_header(work)
     bundle = work / BUNDLE
     answer = work / AI_ANSWER
     post_answer = work / POST_ANSWER
@@ -403,7 +421,7 @@ def explain_chatbot_branch(work, out=print):
     out("  2. Paste it into any chatbot as a single message.")
     out(f"  3. Save the chatbot reply as {answer}")
     out("     The first line of that CSV must be exactly:")
-    out("     " + ",".join(RESPONSE_CSV_HEADER))
+    out("     " + ",".join(header))
     step = 4
     if has_posts:
         out(

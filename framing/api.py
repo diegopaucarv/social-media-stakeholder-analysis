@@ -15,11 +15,14 @@ from __future__ import annotations
 
 import json
 import os
+import re
 import sys
 import time
 from collections.abc import Iterable
 from pathlib import Path
 from typing import Any
+
+from . import post_fields
 
 ENABLED_BY_DEFAULT = False
 API_KEY_ENV = "FRAMING_API_KEY"
@@ -318,27 +321,43 @@ def _first_text(record: dict, keys: Iterable[str]) -> str:
     return ""
 
 
-def _normalise_post_records(parsed: Iterable[Any]) -> list[dict]:
-    """Map model variants onto the post-answer shape consumed by the merge step."""
+def _normalised_keys(raw: dict) -> dict:
+    """Lower-case the keys, collapsing whitespace/``-``/``_`` runs into one ``_``.
+
+    The alias registry is lower-case and underscore-separated, so this also accepts
+    camelCase keys (``postKey`` -> ``postkey``) and spaced headers (``Post Key``).
+    """
+    return {
+        re.sub(r"[\s_-]+", "_", str(key).strip().lower()): value
+        for key, value in raw.items()
+    }
+
+
+def _normalise_post_records(parsed: Iterable[Any], cfg: Any = None) -> list[dict]:
+    """Map model variants onto the post-answer shape consumed by the merge step.
+
+    Only the study's selected CSV fields are emitted: a field the study does not ask
+    for is ignored even when the model returns it. With ``cfg=None`` the default
+    vocabulary is used.
+    """
+    names = (
+        [spec.name for spec in post_fields.csv_fields(cfg.output_post_fields)]
+        if cfg is not None
+        else list(post_fields.POST_CSV_ORDER)
+    )
     records: list[dict] = []
     for raw in parsed:
         if not isinstance(raw, dict):
             continue
-        post_key = _first_text(raw, ("post_key", "postKey", "post_url", "postUrl"))
+        keys = _normalised_keys(raw)
+        post_key = _first_text(keys, post_fields.POST_BY_NAME["post_key"].aliases)
         if not post_key:
             continue
-        records.append(
-            {
-                "post_key": post_key,
-                "topic": _first_text(raw, ("topic", "post_topic")),
-                "primary_frame_id": _first_text(
-                    raw, ("primary_frame_id", "post_frame_id", "frame_id")
-                ),
-                "source_type_guess": _first_text(
-                    raw, ("source_type_guess", "source_type")
-                ),
-            }
-        )
+        record = {name: "" for name in names}
+        record["post_key"] = post_key
+        for name in names[1:]:
+            record[name] = _first_text(keys, post_fields.POST_BY_NAME[name].aliases)
+        records.append(record)
     return records
 
 
@@ -355,8 +374,8 @@ def classify_post_batches(
 ) -> list[dict]:
     """Classify every batch under ``<work_dir>/post_batches`` through the chat API.
 
-    Returns a flat list of dicts with exactly the keys the chatbot CSV branch
-    uses for posts (``post_key``, ``topic``, ``primary_frame_id``,
+    Returns a flat list of dicts with exactly the study's selected post CSV fields
+    (default: ``post_key``, ``topic``, ``primary_frame_id``,
     ``source_type_guess``). Duplicate ``post_key`` values keep their last
     occurrence, mirroring ``merge``.
 
@@ -381,6 +400,6 @@ def classify_post_batches(
         max_retries=max_retries,
     )
     deduped: dict[str, dict] = {}
-    for record in _normalise_post_records(raw):
+    for record in _normalise_post_records(raw, cfg):
         deduped[record["post_key"]] = record
     return list(deduped.values())

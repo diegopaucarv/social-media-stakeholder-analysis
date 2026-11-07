@@ -12,8 +12,8 @@ import json
 import re
 from pathlib import Path
 
-from . import jsonschema_lite
-from .schemas import EMERGENT
+from . import fields, jsonschema_lite, post_fields
+from .schemas import EMERGENT, EVIDENCE, STANCES
 from .utils import read_json, write_json
 
 PKG_ROOT = Path(__file__).resolve().parent.parent
@@ -149,6 +149,54 @@ class Config:
         self.locations = modules["locations"]
         self.codebook = modules["codebook"]
 
+        # ---- answer-field vocabulary (framing.fields): what the model is asked for
+        # Resolved outside the `self.study` defaults on purpose: a study that does not
+        # mention output_fields must keep the exact config hash it had before.
+        selected = self.study.get("output_fields")
+        self.output_fields = (
+            tuple(selected) if selected is not None else fields.FIELD_NAMES
+        )
+        self.output_field_set = frozenset(self.output_fields)
+        self.field_specs = fields.active(self.output_fields)
+        overrides = self.study.get("output_field_help") or {}
+        self.field_help = {
+            spec.name: str(overrides.get(spec.name, spec.help))
+            for spec in self.field_specs
+        }
+        self.record_defaults = fields.record_defaults(self.output_fields)
+
+        # A study that spells out the default vocabulary, or wording identical to the
+        # built-in text, must hash like a study that omits the keys: otherwise a no-op
+        # edit looks like a config change and would force a pointless re-classification.
+        if fields.is_default_selection(self.output_fields):
+            self.study.pop("output_fields", None)
+        kept = fields.normalize_help(overrides, fields.BY_NAME, self.output_field_set)
+        if kept:
+            self.study["output_field_help"] = kept
+        else:
+            self.study.pop("output_field_help", None)
+
+        # ---- post answer vocabulary (framing.post_fields)
+        pselected = self.study.get("output_post_fields")
+        self.output_post_fields = (
+            tuple(pselected) if pselected is not None else post_fields.POST_FIELD_NAMES
+        )
+        self.output_post_field_set = frozenset(self.output_post_fields)
+        self.post_field_specs = post_fields.active(self.output_post_fields)
+        poverrides = self.study.get("output_post_field_help") or {}
+        self.post_field_help = {
+            spec.name: str(poverrides.get(spec.name, spec.help))
+            for spec in self.post_field_specs
+        }
+        self.post_record_defaults = post_fields.record_defaults(self.output_post_fields)
+        if post_fields.is_default_selection(self.output_post_fields):
+            self.study.pop("output_post_fields", None)
+        pkept = post_fields.normalize_help(poverrides, self.output_post_field_set)
+        if pkept:
+            self.study["output_post_field_help"] = pkept
+        else:
+            self.study.pop("output_post_field_help", None)
+
         # ---- codebook lookups
         self.no_frame_id = self.codebook["no_frame"]["id"]
         self.frames = self.codebook["frames"]
@@ -162,6 +210,23 @@ class Config:
                 self.thread_label[t["id"]] = t["label"]
                 self.thread_frame[t["id"]] = f["id"]
         self.thread_ids = list(self.thread_label)
+        # The codebook is the authority on the vocabulary and on its order: the prompt,
+        # the JSON schema and the record checks render the ids in declaration order, and
+        # the *last* evidence level is the weakest one in the gap report.
+        self.stance_ids = list(self.codebook.get("stance_definitions") or {}) or list(
+            STANCES
+        )
+        self.evidence_ids = list(
+            self.codebook.get("evidence_definitions") or {}
+        ) or list(EVIDENCE)
+        # ---- classification protocol sentinel (thread proposed by the model)
+        self.emergent_thread_id = str(
+            self.study["classification"].get("emergent_thread_id") or EMERGENT
+        )
+        # Restating the default must not change the hash: otherwise an explicit but
+        # identical key would look like a config change and force a re-classification.
+        if self.emergent_thread_id == EMERGENT:
+            self.study["classification"].pop("emergent_thread_id", None)
         # ---- actors
         self.actor_categories = {}
         for lvl in self.actors["levels"]:
@@ -238,6 +303,8 @@ class Config:
         )
 
         errs: list[str] = []
+        errs += fields.validate_selection(self.output_fields)
+        errs += post_fields.validate_selection(self.output_post_fields)
 
         def dupes(values, what):
             seen, bad = set(), set()
@@ -264,8 +331,16 @@ class Config:
         errs += dupes([i["id"] for i in self.indicators], "indicator id")
         if self.no_frame_id in self.frame_ids:
             errs.append(f"no_frame id {self.no_frame_id!r} collides with a frame id")
-        if EMERGENT in self.thread_ids or EMERGENT in self.frame_ids:
-            errs.append(f"{EMERGENT!r} is a reserved id")
+        if (
+            self.emergent_thread_id in self.thread_ids
+            or self.emergent_thread_id in self.frame_ids
+        ):
+            errs.append(f"{self.emergent_thread_id!r} is a reserved id")
+        if self.emergent_thread_id == self.no_frame_id:
+            errs.append(
+                "classification.emergent_thread_id "
+                f"{self.emergent_thread_id!r} collides with the no_frame id"
+            )
         rel = self.study["relevance"]
         if rel["medium_threshold"] > rel["high_threshold"]:
             errs.append("relevance.medium_threshold must be <= high_threshold")
@@ -314,11 +389,18 @@ class Config:
                 errs.append(
                     f"example {i}: output.comment_id differs from input.comment_id"
                 )
+            # Fields the study no longer asks for are outside the contract, so they
+            # are ignored here instead of forcing every stored example to be edited.
+            graded = {
+                k: v
+                for k, v in out.items()
+                if k in self.output_field_set or k not in fields.BY_NAME
+            }
             wrapper = {"$defs": {"item": item_schema}, "$ref": "#/$defs/item"}
             errs += [
-                f"example {i}: {m}" for m in jsonschema_lite.validate(out, wrapper)
+                f"example {i}: {m}" for m in jsonschema_lite.validate(graded, wrapper)
             ]
-            errs += [f"example {i}: {m}" for m in check_classification(out, self)]
+            errs += [f"example {i}: {m}" for m in check_classification(graded, self)]
         return errs
 
 

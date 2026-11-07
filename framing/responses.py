@@ -19,8 +19,9 @@ from typing import TYPE_CHECKING, Any
 
 import pandas as pd
 
+from . import fields, post_fields
 from .progress import progress
-from .schemas import EMERGENT, RECORD_DEFAULTS, normalise_classification
+from .schemas import RECORD_DEFAULTS, normalise_classification
 from .utils import expand_globs, parse_json_text
 
 if TYPE_CHECKING:  # pragma: no cover
@@ -33,37 +34,29 @@ __all__ = [
     "validate_response_frame",
 ]
 
+
+def post_columns(cfg) -> list[str]:
+    """The post-answer CSV columns this study asks for, in the published CSV order."""
+    return [spec.name for spec in post_fields.csv_fields(cfg.output_post_fields)]
+
+
 # Canonical record field -> accepted CSV header names (matched case-insensitively
 # after trimming whitespace).
+#: Canonical record field -> accepted CSV header names, derived from the field
+#: registry. Only fields that take part in the CSV contract are mapped here, so a
+#: field such as ``review_reason`` stays JSON-only exactly as before.
 _COLUMN_ALIASES: dict[str, tuple[str, ...]] = {
-    "comment_id": ("comment_id", "commentid", "id"),
-    "is_institutional": ("is_institutional", "institutional"),
-    "frame_id": ("frame_id", "frame", "marco"),
-    "secondary_frame_id": ("secondary_frame_id",),
-    "thread_id": ("thread_id",),
-    "stance": ("stance", "stance_id"),
-    "evidence_level": ("evidence_level",),
-    "confidence": ("confidence",),
-    "rationale": ("rationale",),
-    "literal_excerpt": ("literal_excerpt",),
-    "emergent_thread_proposal": ("emergent_thread_proposal",),
-    "actor_category": ("actor_category",),
-    "actor_self_declared": ("actor_self_declared",),
-    "actor_evidence": ("actor_evidence",),
-    "needs_human_review": ("needs_human_review",),
+    spec.name: tuple(spec.aliases) for spec in fields.csv_fields(fields.FIELD_NAMES)
 }
-# Canonical post-answer columns, in output order.
-POST_COLUMNS = ["post_key", "topic", "primary_frame_id", "source_type_guess"]
+#: The default post-answer columns, in output order (see ``framing.post_fields``).
+POST_COLUMNS = [
+    spec.name for spec in post_fields.csv_fields(post_fields.POST_FIELD_NAMES)
+]
 # Post-level answers: canonical field -> accepted header/JSON keys (case/space-insensitive).
+# All fields are mapped, selected or not, so an answer produced before a study trimmed
+# its vocabulary is still accepted and the extra keys are simply ignored.
 _POST_COLUMN_ALIASES: dict[str, tuple[str, ...]] = {
-    "post_key": ("post_key", "post_id", "url", "post_url", "post_url_key"),
-    "topic": ("topic", "post_topic", "title"),
-    "primary_frame_id": ("primary_frame_id", "post_frame_id", "frame_id", "frame"),
-    "source_type_guess": (
-        "source_type_guess",
-        "source_type",
-        "source_type_hint",
-    ),
+    spec.name: tuple(spec.aliases) for spec in post_fields.POST_FIELDS
 }
 MAX_ISSUE_EXAMPLES = 20
 MAX_UNKNOWN_IDS = 20
@@ -344,7 +337,7 @@ def load_post_responses(patterns, cfg: Config) -> tuple[pd.DataFrame, dict]:
 
     Rows without a ``post_key`` are dropped and counted as invalid; the rest is
     de-duplicated on ``post_key`` keeping the last occurrence. The result always
-    has exactly the :data:`POST_COLUMNS` columns.
+    has exactly the study's selected post columns (default: :data:`POST_COLUMNS`).
 
     Args:
         patterns: Glob pattern or iterable of glob patterns of post-answer files.
@@ -370,6 +363,7 @@ def load_post_responses(patterns, cfg: Config) -> tuple[pd.DataFrame, dict]:
         "invalid_records": 0,
         "issue_examples": [],
     }
+    columns = post_columns(cfg)
     rows: list[dict[str, str]] = []
     for path in progress(files, total=len(files), desc="loading post responses"):
         extension = Path(path).suffix.lower() or "<none>"
@@ -403,11 +397,11 @@ def load_post_responses(patterns, cfg: Config) -> tuple[pd.DataFrame, dict]:
                 )
                 continue
             row = {"post_key": post_key}
-            for column in POST_COLUMNS[1:]:
+            for column in columns[1:]:
                 row[column] = _text(record.get(column))
             rows.append(row)
 
-    frame = pd.DataFrame(rows, columns=POST_COLUMNS)
+    frame = pd.DataFrame(rows, columns=columns)
     if not frame.empty:
         frame = frame.drop_duplicates("post_key", keep="last")
     frame = frame.fillna("").reset_index(drop=True)
@@ -462,7 +456,8 @@ def validate_response_frame(responses: pd.DataFrame, cfg: Config) -> list[str]:
     The frame is valid when it contains all
     :data:`framing.schemas.RECORD_DEFAULTS` columns, has at least one row, has a
     non-empty ``comment_id`` in at least one row and every ``frame_id`` is a
-    configured frame id, the configured no-frame id or :data:`framing.schemas.EMERGENT`.
+    configured frame id, the configured no-frame id or the study's
+    :attr:`framing.config.Config.emergent_thread_id`.
 
     Args:
         responses: Response frame to validate.
@@ -485,7 +480,9 @@ def validate_response_frame(responses: pd.DataFrame, cfg: Config) -> list[str]:
         problems.append("all comment_id values are empty")
 
     if "frame_id" in responses.columns:
-        valid = {str(frame_id) for frame_id in cfg.all_frame_ids} | {EMERGENT}
+        valid = {str(frame_id) for frame_id in cfg.all_frame_ids} | {
+            cfg.emergent_thread_id
+        }
         bad = sorted({_text(value) for value in responses["frame_id"]} - valid)
         if bad:
             problems.append(

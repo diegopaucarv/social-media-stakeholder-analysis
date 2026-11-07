@@ -15,7 +15,6 @@ from scipy import stats as sps
 
 from . import files as F
 from .config import Config
-from .schemas import EMERGENT
 from .users import load_coded
 from .utils import write_csv
 
@@ -323,13 +322,13 @@ def compute_stats(
             excluded_rows = []
             for fid in cfg.frame_ids:
                 sub = df[df["frame_id"] == fid]
-                # EMERGENT is a thread_id value offered to the model for new
-                # proposals, not an analyst-defined thread. Keep those rows in
+                # The emergent id is a thread_id value offered to the model for
+                # new proposals, not an analyst-defined thread. Keep those rows in
                 # `coded` (frame-level tests legitimately use them) but drop
                 # them here so the omnibus test does not manufacture a phantom
-                # EMERGENT thread category.
+                # thread category.
                 n_frame = len(sub)
-                sub = sub[sub["thread_id"] != EMERGENT]
+                sub = sub[sub["thread_id"] != cfg.emergent_thread_id]
                 n_excluded = n_frame - len(sub)
                 if n_excluded:
                     excluded_rows.append(
@@ -379,7 +378,7 @@ def run_stats(cfg: Config, work_dir, out_dir=None) -> dict:
             if name == EXCLUDED_EMERGENT_KEY:
                 fh.write(
                     f"== {name}\n{tab.to_string(index=False)}\n\n"
-                    f"Rows with thread_id == {EMERGENT} are emergent proposals, not "
+                    f"Rows with thread_id == {cfg.emergent_thread_id} are emergent proposals, not "
                     "analyst-defined threads: frame-level tests keep them, "
                     "thread-level tests exclude them.\n\n"
                 )
